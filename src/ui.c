@@ -1,11 +1,11 @@
 #include "ui.h"
 
-void render_tile(Asset_t * assets, Tile_t tile, int x, int y)
+void render_tile(Asset_t * assets, int tile, int x, int y)
 {
     SDL_Rect sprite_offset, position;
 
     sprite_offset.x = 0;
-    sprite_offset.y = tile.id * TILEH;
+    sprite_offset.y = tile * TILEH;
     sprite_offset.w = TILEW;
     sprite_offset.h = TILEH;
     position.x = (x * TILEW) + BOARD_OFFSET_X;
@@ -69,7 +69,7 @@ void render_board(Asset_t * assets, Floor_t * floor, Player_t * player)
     int x, y;
     int x_offset, y_offset;
     int map_x, map_y;
-    Tile_t tile;
+    int tile;
 
     x_offset = floor_get_x_offset(player->x, floor->width);
     y_offset = floor_get_y_offset(player->y, floor->height);

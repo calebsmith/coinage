@@ -9,7 +9,7 @@ void floor_init(Floor_t * floor)
     floor->width = 19;
     floor->height = 20;
     size = floor->width * floor->height;
-    floor->tiles = malloc(size * sizeof(Tile_t));
+    floor->tiles = malloc(size * sizeof(int));
     for (i = 0; i < size; i++) {
         tile_id = 0;
         if (i == 3 * 19 + 4) {
@@ -20,6 +20,9 @@ void floor_init(Floor_t * floor)
         }
         if (i == 6 * 19 + 12) {
             tile_id = 1;
+        }
+        if (i == 7 * 19 + 10) {
+            tile_id = 2;
         }
         if (i == 9 * 19 + 3) {
             tile_id = 1;
@@ -33,26 +36,20 @@ void floor_init(Floor_t * floor)
         if (i == 18) {
             tile_id = 1;
         }
-        floor->tiles[i].id = tile_id;
-        if (tile_id == 1) {
-            floor->tiles[i].solid_up = true;
-            floor->tiles[i].solid_down = true;
-            floor->tiles[i].solid_left = true;
-            floor->tiles[i].solid_right = true;
-        }
+        floor->tiles[i] = tile_id;
     }
     floor->items = qtree_init((Box_t) {(Point_t) {0, 0}, floor->width, floor->height});
 }
 
 /*
- * Given a Floor_t* and x,y coordinates, returns the Tile_t value of the tile
+ * Given a Floor_t* and x,y coordinates, returns the int value of the tile
  * at that location.
  *
  * Parameters: const Floor_t* floor, int x, int y
  * Side-Effects: None
  * Returns: int value of the cell (0 or 1)
  */
-Tile_t floor_get_tile(const Floor_t * floor, int x, int y)
+int floor_get_tile(const Floor_t * floor, int x, int y)
 {
     int index;
 
@@ -62,12 +59,12 @@ Tile_t floor_get_tile(const Floor_t * floor, int x, int y)
     return floor->tiles[index];
 }
 
-void floor_set_tile(Floor_t * floor, int x, int y, Tile_t tile)
+void floor_set_tile(Floor_t * floor, int x, int y, int tile)
 {
     int index;
 
     assert(x >= 0 && x < floor->width);
-    assert(y >= 0 && y < floor->width);
+    assert(y >= 0 && y < floor->height);
     index = y * floor->width + x;
     floor->tiles[index] = tile;
 }
@@ -85,14 +82,14 @@ void floor_destroy(Floor_t * floor)
 
 void floor_display(const Floor_t * floor)
 {
-    Tile_t tile;
+    int tile;
     int x, y;
 
     printf("-------\n");
     for (y = 0; y < floor->height; y++) {
         for (x = 0; x < floor->width; x++) {
             tile = floor_get_tile(floor, x, y);
-            printf("%d|", tile.id);
+            printf("%d|", tile);
         }
         printf("|\n");
         printf("-------\n");

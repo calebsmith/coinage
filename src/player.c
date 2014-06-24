@@ -3,13 +3,18 @@
 
 void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
 {
-    Tile_t target_tile;
+    int target_tile;
 
     switch (PLAYER_DIRECTION) {
     case PLAYER_UP:
         if (player->y > 0) {
             target_tile = floor_get_tile(floor, player->x, player->y - 1);
-            if (!target_tile.solid_down) {
+            if (target_tile == 0) {
+                player->y = player->y - 1;
+            } else if(player->y > 1 && target_tile == 2 &&
+                floor_get_tile(floor, player->x, player->y - 2) == 0) {
+                floor_set_tile(floor, player->x, player->y - 2, 2);
+                floor_set_tile(floor, player->x, player->y - 1, 0);
                 player->y = player->y - 1;
             }
         }
@@ -17,7 +22,12 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
     case PLAYER_DOWN:
         if (player->y < floor->height - 1) {
             target_tile = floor_get_tile(floor, player->x, player->y + 1);
-            if (!target_tile.solid_up) {
+            if (target_tile == 0) {
+                player->y = player->y + 1;
+            } else if(player->y < floor->height - 2 && target_tile == 2 &&
+                floor_get_tile(floor, player->x, player->y + 2) == 0) {
+                floor_set_tile(floor, player->x, player->y + 2, 2);
+                floor_set_tile(floor, player->x, player->y + 1, 0);
                 player->y = player->y + 1;
             }
         }
@@ -25,7 +35,12 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
     case PLAYER_LEFT:
         if (player->x > 0) {
             target_tile = floor_get_tile(floor, player->x - 1, player->y);
-            if (!target_tile.solid_right) {
+            if (target_tile == 0) {
+                player->x = player->x - 1;
+            } else if(player->x > 1 && target_tile == 2 &&
+                floor_get_tile(floor, player->x - 2, player->y) == 0) {
+                floor_set_tile(floor, player->x - 2, player->y, 2);
+                floor_set_tile(floor, player->x - 1, player->y, 0);
                 player->x = player->x - 1;
             }
         }
@@ -33,7 +48,12 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
     case PLAYER_RIGHT:
         if (player->x < floor->width - 1) {
             target_tile = floor_get_tile(floor, player->x + 1, player->y);
-            if (!target_tile.solid_left) {
+            if (target_tile == 0) {
+                player->x = player->x + 1;
+            } else if(player->x < floor->width - 2 && target_tile == 2 &&
+                floor_get_tile(floor, player->x + 2, player->y) == 0) {
+                floor_set_tile(floor, player->x + 2, player->y, 2);
+                floor_set_tile(floor, player->x + 1, player->y, 0);
                 player->x = player->x + 1;
             }
         }
