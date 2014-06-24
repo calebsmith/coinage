@@ -100,11 +100,34 @@ void render_player(Asset_t * assets, Floor_t * floor, Player_t * player)
     }
 }
 
+void render_inventory(Asset_t * assets, Player_t * player)
+{
+    SDL_Rect sprite_offset, position;
+
+    Item_t item;
+    int i;
+
+    sprite_offset.x = 0;
+    sprite_offset.w = TILEW;
+    sprite_offset.h = TILEH;
+    for (i = 0; i < player->item_size; i++) {
+        item = player->items[i];
+        position.x = ((TILE_DISPLAY_WIDTH + i) * TILEW) + BOARD_OFFSET_X;
+        position.y = ((TILE_DISPLAY_HEIGHT - 1) * TILEH) + BOARD_OFFSET_Y;
+
+        sprite_offset.y = item.id * TILEH;
+        if (assets->items != NULL) {
+            SDL_BlitSurface(assets->items, &sprite_offset, assets->buffer, &position);
+        }
+    }
+}
+
 void render(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     render_board(assets, floor, player);
     render_items(assets, floor, player);
     render_player(assets, floor, player);
+    render_inventory(assets, player);
     SDL_Flip(assets->buffer);
     return;
 }

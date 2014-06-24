@@ -27,6 +27,7 @@ void render_tile(Asset_t * assets, Tile_t tile, int x, int y);
 void render_board(Asset_t * assets, Floor_t * floor, Player_t * player);
 void render_player(Asset_t * assets, Floor_t * floor, Player_t * player);
 void render_items(Asset_t * assets, Floor_t * floor, Player_t * player);
+void render_inventory(Asset_t * assets, Player_t * player);
 void render(Asset_t * assets, Floor_t * floor, Player_t * player);
 
 void logic(Floor_t * floor, Player_t * player);
