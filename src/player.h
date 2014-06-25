@@ -18,6 +18,7 @@ enum {
 
 typedef struct {
     int x, y;
+    int direction;
     Item_t items[PLAYER_MAX_ITEM_SIZE];
     int item_size;
 } Player_t;

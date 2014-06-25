@@ -188,7 +188,7 @@ int render_loop()
     SDL_Event event;
     Asset_t assets;
     Floor_t floor;
-    Player_t player = {5, 5, {}, 0};
+    Player_t player = {5, 5, PLAYER_DOWN, {}, 0};
     Item_t item = {0};
 
     if (!init_ui(&assets)) {
