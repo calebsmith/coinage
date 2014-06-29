@@ -14,11 +14,23 @@ void floor_init(Floor_t * floor, FILE* infile)
     int item_id, item_size, item_x, item_y;
 
     if ((fscanf(infile, "%d,%d", &floor->width, &floor->height)) != 2) {
-        printf("Bad file format\n");
+        printf("Bad file format. No map width/height\n");
         exit(EXIT_STATUS_BAD_FILE);
     }
     if ((floor->width > MAX_WIDTH || floor->width < MIN_WIDTH) ||
         (floor->height > MAX_HEIGHT || floor->height < MIN_HEIGHT)) {
+        printf("Invalid width/height data.\n"
+            "Must be %d < x < %d and %d < y < %d\n",
+            MIN_WIDTH, MAX_WIDTH, MIN_HEIGHT, MAX_HEIGHT
+        );
+        exit(EXIT_STATUS_BAD_FILE);
+    }
+    if ((fscanf(infile, "%d,%d", &floor->player_start_x, &floor->player_start_y)) != 2) {
+        printf("Bad file format. No player start position\n");
+        exit(EXIT_STATUS_BAD_FILE);
+    }
+    if ((floor->player_start_x >= floor->width || floor->player_start_x < 0) ||
+        (floor->player_start_y >= floor->height || floor->player_start_y < 0)) {
         printf("Invalid width/height data.\n"
             "Must be %d < x < %d and %d < y < %d\n",
             MIN_WIDTH, MAX_WIDTH, MIN_HEIGHT, MAX_HEIGHT

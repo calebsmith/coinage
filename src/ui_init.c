@@ -6,7 +6,7 @@ bool init_ui(Asset_t * assets)
     // initialize SDL, the window, and fonting
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_EnableKeyRepeat(0, 0);
-    SDL_WM_SetCaption("Roguelike Game", NULL);
+    SDL_WM_SetCaption("Coinage", NULL);
     TTF_Init();
     assets->font = NULL;
     // initialize the video buffer in the window

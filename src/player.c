@@ -1,5 +1,22 @@
-#include "floor.h"
 #include "player.h"
+
+bool player_load_level(Floor_t * floor, Player_t * player, char * filename)
+{
+    FILE* infile;
+
+    if ((infile = fopen(filename, "r")) == NULL) {
+        printf("Can't open file\n");
+        return false;
+    } else {
+        floor_init(floor, infile);
+        fclose(infile);
+    }
+    player->x = floor->player_start_x;
+    player->y = floor->player_start_y;
+    player->direction = PLAYER_DOWN;
+    player->item_size = 0;
+    return true;
+}
 
 void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
 {

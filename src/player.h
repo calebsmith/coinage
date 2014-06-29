@@ -23,6 +23,7 @@ typedef struct {
     int item_size;
 } Player_t;
 
+bool player_load_level(Floor_t * floor, Player_t * player, char * filename);
 void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION);
 bool player_check_get_item(Floor_t * floor, Player_t * player);
 #endif

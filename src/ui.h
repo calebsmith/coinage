@@ -34,6 +34,6 @@ void logic(Floor_t * floor, Player_t * player);
 
 bool get_input(SDL_Event event, Floor_t * floor, Player_t * player);
 
-int render_loop();
+void render_loop(Asset_t * assets, Floor_t * floor, Player_t * player);
 
 #endif

@@ -14,7 +14,6 @@
 #include <assert.h>
 
 #include "qtree.h"
-#include "list.h"
 #include "item.h"
 
 #define TILE_DISPLAY_WIDTH 10
@@ -45,6 +44,7 @@ static const int TILE_FLAG_LOOKUP [] = {
 
 typedef struct {
     int width, height;
+    int player_start_x, player_start_y;
     int *tiles;
     Item_t *item_storage;
     QTree_t items;

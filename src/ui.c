@@ -187,29 +187,12 @@ void logic(Floor_t * floor, Player_t * player)
     player_check_get_item(floor, player);
 }
 
-int render_loop()
+void render_loop(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     SDL_Event event;
-    Asset_t assets;
-    Floor_t floor;
-    Player_t player = {5, 5, PLAYER_DOWN, {}, 0};
-    FILE* infile;
 
-    if (!init_ui(&assets)) {
-        quit_ui(&assets);
-        return 1;
+    while (get_input(event, floor, player)) {
+        logic(floor, player);
+        render(assets, floor, player);
     }
-    if ((infile = fopen("data/maps/floor1.dat", "r")) == NULL) {
-        printf("Can't open file\n");
-        return 1;
-    }
-    floor_init(&floor, infile);
-    fclose(infile);
-    while (get_input(event, &floor, &player)) {
-        logic(&floor, &player);
-        render(&assets, &floor, &player);
-    }
-    quit_ui(&assets);
-    floor_destroy(&floor);
-    return 0;
 }
