@@ -10,8 +10,8 @@ void floor_init(Floor_t * floor, FILE* infile)
     char *token;
     int line_number;
     int size;
-    int x;
-    int i;
+    int x, i;
+    int item_id, item_size, item_x, item_y;
 
     if ((fscanf(infile, "%d,%d", &floor->width, &floor->height)) != 2) {
         printf("Bad file format\n");
@@ -46,6 +46,21 @@ void floor_init(Floor_t * floor, FILE* infile)
         }
     }
     floor->items = qtree_init((Box_t) {(Point_t) {0, 0}, floor->width, floor->height});
+    if ((fscanf(infile, "%d", &item_size)) != 1) {
+        printf("Bad file format. No item length given\n");
+        exit(EXIT_STATUS_BAD_FILE);
+    } else {
+        floor->item_storage = malloc(item_size * sizeof(Item_t));
+        for (i = 0; i < item_size; i++) {
+            if ((fscanf(infile, "%d:%d,%d", &item_id, &item_x, &item_y)) != 3) {
+                printf("Bad file format\n");
+                exit(EXIT_STATUS_BAD_FILE);
+            } else {
+                floor->item_storage[i] = (Item_t) {item_id};
+                qtree_insert(&floor->items, (Point_t) {item_x, item_y}, &floor->item_storage[i]);
+            }
+        }
+    }
 }
 
 /*
@@ -85,6 +100,7 @@ void floor_set_tile(Floor_t * floor, int x, int y, int tile)
 void floor_destroy(Floor_t * floor)
 {
     free(floor->tiles);
+    free(floor->item_storage);
     qtree_destroy(&floor->items);
 }
 
