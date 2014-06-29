@@ -15,6 +15,7 @@ bool player_load_level(Floor_t * floor, Player_t * player, char * filename)
     player->y = floor->player_start_y;
     player->direction = PLAYER_DOWN;
     player->item_size = 0;
+    player->coins = 0;
     return true;
 }
 
@@ -96,9 +97,14 @@ bool player_check_get_item(Floor_t * floor, Player_t * player)
     if (player->item_size < PLAYER_MAX_ITEM_SIZE) {
         position = (Point_t) {player->x, player->y};
         if (qtree_pop(&(floor->items), position, (void **) &item)) {
-            player->items[player->item_size] = *item;
-            player->item_size++;
-            return true;
+            if (item->id != 0) {
+                player->items[player->item_size] = *item;
+                player->item_size++;
+                return true;
+            } else {
+                player->coins++;
+                return true;
+            }
         }
     }
     return false;

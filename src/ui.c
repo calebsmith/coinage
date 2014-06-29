@@ -1,5 +1,20 @@
 #include "ui.h"
 
+static int STATS_DISPLAY_X = (TILE_DISPLAY_WIDTH * TILEW) + BOARD_OFFSET_X;
+
+
+void render_text(Asset_t * assets, int x, int y, char * message)
+{
+  SDL_Color color = {0xff, 0x99, 0x00, 0xff};
+  SDL_Rect position = {x, y, 0, 0 };
+  SDL_Surface *text;
+
+  if (assets->font) {
+      text = TTF_RenderText_Solid(assets->font, message, color);
+      SDL_BlitSurface (text, NULL, assets->buffer, &position);
+  }
+}
+
 void render_tile(Asset_t * assets, int tile, int x, int y)
 {
     SDL_Rect sprite_offset, position;
@@ -128,10 +143,15 @@ void render_inventory(Asset_t * assets, Player_t * player)
 
 void render(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
+    char buffer[50] = "";
+
+    SDL_FillRect(assets->buffer, NULL, 0x000000);
     render_board(assets, floor, player);
     render_items(assets, floor, player);
     render_player(assets, floor, player);
     render_inventory(assets, player);
+    snprintf(buffer, sizeof(buffer), "Coins: %d", player->coins);
+    render_text(assets, STATS_DISPLAY_X + 15, 15, buffer);
     SDL_Flip(assets->buffer);
     return;
 }
@@ -196,3 +216,5 @@ void render_loop(Asset_t * assets, Floor_t * floor, Player_t * player)
         render(assets, floor, player);
     }
 }
+
+

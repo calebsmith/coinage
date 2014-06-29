@@ -30,7 +30,7 @@ bool init_ui(Asset_t * assets)
         return false;
     }
     // load fonts
-    assets->font = TTF_OpenFont("data/fonts/NotCourierSans.otf", 18);
+    assets->font = TTF_OpenFont("data/fonts/NotCourierSans.otf", 20);
     if (!assets->font) {
         return false;
     }
