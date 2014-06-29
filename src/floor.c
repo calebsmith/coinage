@@ -1,42 +1,49 @@
 #include "floor.h"
 
-void floor_init(Floor_t * floor)
-{
-    int size;
-    int i;
-    unsigned int tile_id;
+static int MAX_TILE_LINE = MAX_WIDTH * (MAX_TILE + 2) + 1;
 
-    floor->width = 19;
-    floor->height = 20;
+
+void floor_init(Floor_t * floor, FILE* infile)
+{
+    char current_line[MAX_TILE_LINE];
+    int current_tile;
+    char *token;
+    int line_number;
+    int size;
+    int x;
+    int i;
+
+    if ((fscanf(infile, "%d,%d", &floor->width, &floor->height)) != 2) {
+        printf("Bad file format\n");
+        exit(EXIT_STATUS_BAD_FILE);
+    }
+    if ((floor->width > MAX_WIDTH || floor->width < MIN_WIDTH) ||
+        (floor->height > MAX_HEIGHT || floor->height < MIN_HEIGHT)) {
+        printf("Invalid width/height data.\n"
+            "Must be %d < x < %d and %d < y < %d\n",
+            MIN_WIDTH, MAX_WIDTH, MIN_HEIGHT, MAX_HEIGHT
+        );
+        exit(EXIT_STATUS_BAD_FILE);
+    }
     size = floor->width * floor->height;
-    floor->tiles = malloc(size * sizeof(int));
-    for (i = 0; i < size; i++) {
-        tile_id = 0;
-        if (i == 3 * 19 + 4) {
-            tile_id = 1;
+    floor->tiles = calloc(size, size * sizeof(int));
+    for (i = 0, line_number = 0; i < size; line_number++) {
+        if (fgets(current_line, MAX_TILE_LINE, infile) == NULL) {
+            printf("Not enough tile lines in floor file\n");
+            exit(EXIT_STATUS_BAD_FILE);
         }
-        if (i == 5 * 19 + 8) {
-            tile_id = 1;
+        for (token = strtok(current_line, ","), x = 0; token != NULL && x < floor->width; token = strtok(NULL, ","), x++) {
+            if (sscanf(token, "%d", &current_tile) != 1) {
+                // Allow first loop to have garbage token, otherwise error
+                if (x > 0) {
+                    printf("Bad data in floor file. Expected integer, found %s on line %d\n", token, line_number + 1);
+                    exit(EXIT_STATUS_BAD_FILE);
+                }
+            } else {
+                floor->tiles[i] = current_tile;
+                i++;
+            }
         }
-        if (i == 6 * 19 + 12) {
-            tile_id = 1;
-        }
-        if (i == 7 * 19 + 10) {
-            tile_id = 2;
-        }
-        if (i == 9 * 19 + 3) {
-            tile_id = 1;
-        }
-        if (i == 12 * 19 + 6) {
-            tile_id = 1;
-        }
-        if (i == 18 * 19 + 1) {
-            tile_id = 1;
-        }
-        if (i == 18) {
-            tile_id = 1;
-        }
-        floor->tiles[i] = tile_id;
     }
     floor->items = qtree_init((Box_t) {(Point_t) {0, 0}, floor->width, floor->height});
 }

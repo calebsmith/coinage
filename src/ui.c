@@ -194,12 +194,19 @@ int render_loop()
     Floor_t floor;
     Player_t player = {5, 5, PLAYER_DOWN, {}, 0};
     Item_t item = {0};
+    FILE* infile;
 
     if (!init_ui(&assets)) {
         quit_ui(&assets);
         return 1;
     }
-    floor_init(&floor);
+
+    if ((infile = fopen("data/maps/floor1.dat", "r")) == NULL) {
+        printf("Can't open file\n");
+        return 1;
+    }
+
+    floor_init(&floor, infile);
     qtree_insert(&(floor.items), (Point_t) {4, 8}, &item);
     while (get_input(event, &floor, &player)) {
         logic(&floor, &player);

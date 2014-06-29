@@ -7,8 +7,8 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
 
     switch (PLAYER_DIRECTION) {
     case PLAYER_UP:
+        player->direction = PLAYER_UP;
         if (player->y > 0) {
-            player->direction = PLAYER_UP;
             target_tile = floor_get_tile(floor, player->x, player->y - 1);
             if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->y = player->y - 1;
@@ -22,8 +22,8 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
         }
         break;
     case PLAYER_DOWN:
+        player->direction = PLAYER_DOWN;
         if (player->y < floor->height - 1) {
-            player->direction = PLAYER_DOWN;
             target_tile = floor_get_tile(floor, player->x, player->y + 1);
             if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->y = player->y + 1;
@@ -37,8 +37,8 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
         }
         break;
     case PLAYER_LEFT:
+        player->direction = PLAYER_LEFT;
         if (player->x > 0) {
-            player->direction = PLAYER_LEFT;
             target_tile = floor_get_tile(floor, player->x - 1, player->y);
             if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->x = player->x - 1;
@@ -52,8 +52,8 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
         }
         break;
     case PLAYER_RIGHT:
+        player->direction = PLAYER_RIGHT;
         if (player->x < floor->width - 1) {
-            player->direction = PLAYER_RIGHT;
             target_tile = floor_get_tile(floor, player->x + 1, player->y);
             if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->x = player->x + 1;

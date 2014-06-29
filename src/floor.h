@@ -26,6 +26,14 @@
 
 #define tile_has_flag(tile, flag) (!! (TILE_FLAG_LOOKUP[(tile)] & (1 << ((flag) - 1))))
 
+#define EXIT_STATUS_BAD_FILE 1
+#define MIN_WIDTH 3
+#define MIN_HEIGHT 3
+#define MAX_WIDTH 50
+#define MAX_HEIGHT 50
+#define MAX_TILE 99
+
+
 // A bit vector that stores the properties of each tile id
 static const int TILE_FLAG_LOOKUP [] = {
     0,
@@ -39,7 +47,7 @@ typedef struct {
     QTree_t items;
 } Floor_t;
 
-void floor_init(Floor_t * floor);
+void floor_init(Floor_t * floor, FILE* infile);
 void floor_display(const Floor_t * floor);
 int floor_get_tile(const Floor_t * floor, int x, int y);
 void floor_set_tile(Floor_t * floor, int x, int y, int tile);
