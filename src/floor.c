@@ -112,7 +112,9 @@ void floor_set_tile(Floor_t * floor, int x, int y, int tile)
 void floor_destroy(Floor_t * floor)
 {
     free(floor->tiles);
-    free(floor->item_storage);
+    if (floor->item_storage) {
+        free(floor->item_storage);
+    }
     qtree_destroy(&floor->items);
 }
 
