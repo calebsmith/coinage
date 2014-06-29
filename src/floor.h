@@ -20,8 +20,18 @@
 #define TILE_DISPLAY_MID_X (TILE_DISPLAY_WIDTH / 2)
 #define TILE_DISPLAY_MID_Y (TILE_DISPLAY_HEIGHT / 2)
 
+
 #define TILEFLAG_SOLID 1
-#define TILEFLAG_PUSHABLE 2
+#define TILEFLAG_PUSHABLE 1 << 1
+
+#define tile_has_flag(tile, flag) (!! (TILE_FLAG_LOOKUP[(tile)] & (1 << ((flag) - 1))))
+
+// A bit vector that stores the properties of each tile id
+static const int TILE_FLAG_LOOKUP [] = {
+    0,
+    0 | TILEFLAG_SOLID,
+    0 | TILEFLAG_SOLID | TILEFLAG_PUSHABLE,
+};
 
 typedef struct {
     int width, height;
