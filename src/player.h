@@ -11,9 +11,9 @@
 
 enum {
     PLAYER_UP,
+    PLAYER_RIGHT,
     PLAYER_DOWN,
     PLAYER_LEFT,
-    PLAYER_RIGHT,
 };
 
 typedef struct {

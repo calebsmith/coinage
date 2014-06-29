@@ -78,6 +78,7 @@ void floor_set_tile(Floor_t * floor, int x, int y, int tile)
 void floor_destroy(Floor_t * floor)
 {
     free(floor->tiles);
+    qtree_destroy(&floor->items);
 }
 
 void floor_display(const Floor_t * floor)

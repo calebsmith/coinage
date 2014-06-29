@@ -89,14 +89,18 @@ void render_board(Asset_t * assets, Floor_t * floor, Player_t * player)
 void render_player(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     int display_x, display_y;
-    SDL_Rect position;
+    SDL_Rect sprite_offset, position;
 
+    sprite_offset.y = 0;
+    sprite_offset.x = player->direction * TILEW;
+    sprite_offset.w = TILEW;
+    sprite_offset.h = TILEH;
     display_x = player->x + floor_get_x_offset(player->x, floor->width);
     display_y = player->y + floor_get_y_offset(player->y, floor->height);
     position.x = (display_x * TILEW) + BOARD_OFFSET_X;
     position.y = (display_y * TILEH) + BOARD_OFFSET_Y;
     if (assets->player != NULL) {
-        SDL_BlitSurface(assets->player, NULL, assets->buffer, &position);
+        SDL_BlitSurface(assets->player, &sprite_offset, assets->buffer, &position);
     }
 }
 
