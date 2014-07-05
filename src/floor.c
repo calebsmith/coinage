@@ -13,6 +13,10 @@ void floor_init(Floor_t * floor, FILE* infile)
     int x, i;
     int item_id, item_size, item_x, item_y;
 
+    if ((fscanf(infile, "%d", &floor->time)) != 1) {
+        printf("Bad file format. No map time\n");
+        exit(EXIT_STATUS_BAD_FILE);
+    }
     if ((fscanf(infile, "%d,%d", &floor->width, &floor->height)) != 2) {
         printf("Bad file format. No map width/height\n");
         exit(EXIT_STATUS_BAD_FILE);
@@ -58,6 +62,7 @@ void floor_init(Floor_t * floor, FILE* infile)
         }
     }
     floor->items = qtree_init((Box_t) {(Point_t) {0, 0}, floor->width, floor->height});
+    floor->coins = 0;
     if ((fscanf(infile, "%d", &item_size)) != 1) {
         printf("Bad file format. No item length given\n");
         exit(EXIT_STATUS_BAD_FILE);
@@ -68,6 +73,9 @@ void floor_init(Floor_t * floor, FILE* infile)
                 printf("Bad file format\n");
                 exit(EXIT_STATUS_BAD_FILE);
             } else {
+                if (item_id == 0) {
+                    floor->coins++;
+                }
                 floor->item_storage[i] = (Item_t) {item_id};
                 qtree_insert(&floor->items, (Point_t) {item_x, item_y}, &floor->item_storage[i]);
             }

@@ -141,17 +141,28 @@ void render_inventory(Asset_t * assets, Player_t * player)
     }
 }
 
-void render(Asset_t * assets, Floor_t * floor, Player_t * player)
+void render_stats(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     char buffer[50] = "";
 
+    snprintf(buffer, sizeof(buffer), "Coins left: %d", floor->coins - player->coins);
+    render_text(assets, STATS_DISPLAY_X + 15, 15, buffer);
+    if (floor->time > 0) {
+        snprintf(buffer, sizeof(buffer), "Timer: %d", floor->time);
+    } else {
+        snprintf(buffer, sizeof(buffer), "Timer: ---");
+    }
+    render_text(assets, STATS_DISPLAY_X + 15, 55, buffer);
+}
+
+void render(Asset_t * assets, Floor_t * floor, Player_t * player)
+{
     SDL_FillRect(assets->buffer, NULL, 0x000000);
     render_board(assets, floor, player);
     render_items(assets, floor, player);
     render_player(assets, floor, player);
     render_inventory(assets, player);
-    snprintf(buffer, sizeof(buffer), "Coins: %d", player->coins);
-    render_text(assets, STATS_DISPLAY_X + 15, 15, buffer);
+    render_stats(assets, floor, player);
     SDL_Flip(assets->buffer);
     return;
 }

@@ -44,8 +44,10 @@ static const int TILE_FLAG_LOOKUP [] = {
 
 typedef struct {
     int width, height;
+    int time;
     int player_start_x, player_start_y;
     int *tiles;
+    int coins;
     Item_t *item_storage;
     QTree_t items;
 } Floor_t;
