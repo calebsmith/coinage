@@ -11,24 +11,24 @@ bool init_ui(Asset_t * assets)
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_EnableKeyRepeat(0, 0);
     SDL_WM_SetCaption("Coinage", NULL);
-    TTF_Init();
     Mix_Init(0);
+    TTF_Init();
     // initialize the video buffer in the window
     assets->buffer = SDL_SetVideoMode(SCRWIDTH, SCRHEIGHT, SCRBPP, SDL_HWSURFACE);
     if (!assets->buffer) {
         return false;
     }
-    //Initialize SDL_mixer
+    // Initialize Audio
     if (Mix_OpenAudio(44100, AUDIO_S16LSB, 2, 2048) < 0) {
         printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
         return false;
     }
-    assets->grunt_sound = Mix_LoadWAV("data/sounds/win.wav");
+    // Load sound files
+    assets->grunt_sound = Mix_LoadWAV("data/sounds/grunt.wav");
     if (assets->grunt_sound == NULL) {
         printf( "Failed to load grunt sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
         return false;
     }
-
     assets->coin_sound = Mix_LoadWAV("data/sounds/coin.wav");
     if (assets->coin_sound == NULL) {
         printf("Failed to load grunt sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
