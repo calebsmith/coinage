@@ -30,6 +30,7 @@ bool get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pl
             move_result = player_move(floor, player, PLAYER_RIGHT);
             break;
         default:
+            move_result = true;
             break;
         }
         if (!move_result) {
@@ -51,9 +52,9 @@ bool get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pl
 }
 
 
-int logic(Timer_t * tick_timer, Floor_t * floor, Player_t * player)
+int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * player)
 {
-    player_check_get_item(floor, player);
+    player_check_get_item(assets, floor, player);
     floor_increment_time(floor);
     if (floor->coins - player->coins <= 0) {
         return floor->level_number + 1;
@@ -73,8 +74,9 @@ int play_loop(Asset_t * assets, Floor_t * floor, Player_t * player)
     timer_init(&fps_timer);
     timer_init(&tick_timer);
     while (get_input(event, assets, floor, player)) {
-        result = logic(&tick_timer, floor, player);
+        result = logic(&tick_timer, assets, floor, player);
         if (result != 0) {
+            Mix_PlayChannel(-1, assets->win_sound, 0);
             if (result <= MAX_LEVEL) {
                 return result;
             } else {

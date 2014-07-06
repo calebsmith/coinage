@@ -24,7 +24,7 @@
 
 #define MAX_LEVEL 2
 
-int logic(Timer_t * tick_timer, Floor_t * floor, Player_t * player);
+int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * player);
 bool get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * player);
 int play_loop(Asset_t * assets, Floor_t * floor, Player_t * player);
 

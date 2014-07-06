@@ -21,6 +21,8 @@ typedef struct {
     SDL_Surface *items;
     SDL_Surface *player;
     Mix_Chunk *grunt_sound;
+    Mix_Chunk *coin_sound;
+    Mix_Chunk *win_sound;
     TTF_Font *font;
 } Asset_t;
 

@@ -103,7 +103,7 @@ bool player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
     return false;
 }
 
-bool player_check_get_item(Floor_t * floor, Player_t * player)
+bool player_check_get_item(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     Point_t position;
     Item_t * item;
@@ -117,6 +117,7 @@ bool player_check_get_item(Floor_t * floor, Player_t * player)
                 return true;
             } else {
                 player->coins++;
+                Mix_PlayChannel(-1, assets->coin_sound, 0);
                 return true;
             }
         }

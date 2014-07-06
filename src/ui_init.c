@@ -3,25 +3,39 @@
 // Initialize SDL and game window
 bool init_ui(Asset_t * assets)
 {
-    // initialize SDL, the window, and fonting
+    assets->font = NULL;
+    assets->grunt_sound = NULL;
+    assets->win_sound = NULL;
+    assets->coin_sound = NULL;
+    // initialize SDL, the window, sound system, and fonting
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_EnableKeyRepeat(0, 0);
     SDL_WM_SetCaption("Coinage", NULL);
     TTF_Init();
-    assets->font = NULL;
-    assets->grunt_sound = NULL;
+    Mix_Init(0);
     // initialize the video buffer in the window
-    assets->buffer = SDL_SetVideoMode(SCRWIDTH, SCRHEIGHT, SCRBPP, SDL_HWSURFACE);      // | SDL_FULLSCREEN);
+    assets->buffer = SDL_SetVideoMode(SCRWIDTH, SCRHEIGHT, SCRBPP, SDL_HWSURFACE);
     if (!assets->buffer) {
         return false;
     }
     //Initialize SDL_mixer
-    if (Mix_OpenAudio(44100, AUDIO_S16LSB, 2, 4096) < 0) {
+    if (Mix_OpenAudio(44100, AUDIO_S16LSB, 2, 2048) < 0) {
         printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
         return false;
     }
-    assets->grunt_sound = Mix_LoadWAV("data/sounds/grunt.wav");
+    assets->grunt_sound = Mix_LoadWAV("data/sounds/win.wav");
     if (assets->grunt_sound == NULL) {
+        printf( "Failed to load grunt sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        return false;
+    }
+
+    assets->coin_sound = Mix_LoadWAV("data/sounds/coin.wav");
+    if (assets->coin_sound == NULL) {
+        printf("Failed to load grunt sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        return false;
+    }
+    assets->win_sound = Mix_LoadWAV("data/sounds/win.wav");
+    if (assets->win_sound == NULL) {
         printf( "Failed to load grunt sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
         return false;
     }
@@ -67,6 +81,12 @@ void quit_ui(Asset_t * assets)
 {
     if (assets->grunt_sound) {
         Mix_FreeChunk(assets->grunt_sound);
+    }
+    if (assets->coin_sound) {
+        Mix_FreeChunk(assets->coin_sound);
+    }
+    if (assets->win_sound) {
+        Mix_FreeChunk(assets->win_sound);
     }
     if (assets->buffer) {
         SDL_FreeSurface(assets->buffer);
