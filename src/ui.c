@@ -1,8 +1,9 @@
 #include "ui.h"
 
-bool get_input(SDL_Event event, Floor_t * floor, Player_t * player)
+bool get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     int tile_x, tile_y;
+    bool move_result;
 
     if (SDL_PollEvent(&event) == 0) {
         // No event, carry on
@@ -17,19 +18,22 @@ bool get_input(SDL_Event event, Floor_t * floor, Player_t * player)
     if (event.type == SDL_KEYDOWN) {
         switch (event.key.keysym.sym) {
         case SDLK_UP:
-            player_move(floor, player, PLAYER_UP);
+            move_result = player_move(floor, player, PLAYER_UP);
             break;
         case SDLK_DOWN:
-            player_move(floor, player, PLAYER_DOWN);
+            move_result = player_move(floor, player, PLAYER_DOWN);
             break;
         case SDLK_LEFT:
-            player_move(floor, player, PLAYER_LEFT);
+            move_result = player_move(floor, player, PLAYER_LEFT);
             break;
         case SDLK_RIGHT:
-            player_move(floor, player, PLAYER_RIGHT);
+            move_result = player_move(floor, player, PLAYER_RIGHT);
             break;
         default:
             break;
+        }
+        if (!move_result) {
+            Mix_PlayChannel(-1, assets->grunt_sound, 0);
         }
     }
     // Handle mouse
@@ -68,7 +72,7 @@ int play_loop(Asset_t * assets, Floor_t * floor, Player_t * player)
 
     timer_init(&fps_timer);
     timer_init(&tick_timer);
-    while (get_input(event, floor, player)) {
+    while (get_input(event, assets, floor, player)) {
         result = logic(&tick_timer, floor, player);
         if (result != 0) {
             if (result <= MAX_LEVEL) {

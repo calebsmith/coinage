@@ -7,6 +7,7 @@
 #include "SDL/SDL_image.h"
 #include "SDL/SDL_ttf.h"
 #include "SDL/SDL_timer.h"
+#include "SDL/SDL_mixer.h"
 
 #include "floor.h"
 
@@ -19,6 +20,7 @@ typedef struct {
     SDL_Surface *spritesheet;
     SDL_Surface *items;
     SDL_Surface *player;
+    Mix_Chunk *grunt_sound;
     TTF_Font *font;
 } Asset_t;
 

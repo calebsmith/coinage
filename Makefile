@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall `sdl-config --cflags`
-LIBS = `sdl-config --libs` -lSDL_image -lSDL_ttf
+LIBS = `sdl-config --libs` -lSDL_image -lSDL_ttf -lSDL_mixer
 NAME = 'chip'
 HEADERS = src/box.h src/list.h src/qtree.h src/item.h src/timer.h src/player.h src/floor.h src/graphics.h src/ui_init.h src/ui.h
 SOURCES = src/main.c $(HEADERS:.h=.c)

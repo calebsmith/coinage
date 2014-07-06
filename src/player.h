@@ -26,6 +26,6 @@ typedef struct {
 } Player_t;
 
 bool player_load_level(Floor_t * floor, Player_t * player, unsigned int level_number);
-void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION);
+bool player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION);
 bool player_check_get_item(Floor_t * floor, Player_t * player);
 #endif

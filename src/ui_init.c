@@ -9,9 +9,20 @@ bool init_ui(Asset_t * assets)
     SDL_WM_SetCaption("Coinage", NULL);
     TTF_Init();
     assets->font = NULL;
+    assets->grunt_sound = NULL;
     // initialize the video buffer in the window
     assets->buffer = SDL_SetVideoMode(SCRWIDTH, SCRHEIGHT, SCRBPP, SDL_HWSURFACE);      // | SDL_FULLSCREEN);
     if (!assets->buffer) {
+        return false;
+    }
+    //Initialize SDL_mixer
+    if (Mix_OpenAudio(44100, AUDIO_S16LSB, 2, 4096) < 0) {
+        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+        return false;
+    }
+    assets->grunt_sound = Mix_LoadWAV("data/sounds/grunt.wav");
+    if (assets->grunt_sound == NULL) {
+        printf( "Failed to load grunt sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
         return false;
     }
     // load tile graphics
@@ -54,6 +65,9 @@ SDL_Surface *load_image(const char *filename)
 
 void quit_ui(Asset_t * assets)
 {
+    if (assets->grunt_sound) {
+        Mix_FreeChunk(assets->grunt_sound);
+    }
     if (assets->buffer) {
         SDL_FreeSurface(assets->buffer);
     }
@@ -66,6 +80,7 @@ void quit_ui(Asset_t * assets)
     if (assets->font) {
         TTF_CloseFont(assets->font);
     }
+    Mix_Quit();
     TTF_Quit();
     SDL_Quit();
 }

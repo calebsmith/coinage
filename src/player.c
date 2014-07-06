@@ -24,7 +24,7 @@ bool player_load_level(Floor_t * floor, Player_t * player, unsigned int level_nu
     return true;
 }
 
-void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
+bool player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
 {
     int target_tile;
 
@@ -35,12 +35,14 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
             target_tile = floor_get_tile(floor, player->x, player->y - 1);
             if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->y = player->y - 1;
+                return true;
             } else if (player->y > 1 &&
                 tile_has_flag(target_tile, TILEFLAG_PUSHABLE) &&
                 !tile_has_flag(floor_get_tile(floor, player->x, player->y - 2), TILEFLAG_SOLID)) {
                     floor_set_tile(floor, player->x, player->y - 2, 2);
                     floor_set_tile(floor, player->x, player->y - 1, 0);
                     player->y = player->y - 1;
+                    return true;
             }
         }
         break;
@@ -50,12 +52,14 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
             target_tile = floor_get_tile(floor, player->x, player->y + 1);
             if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->y = player->y + 1;
+                return true;
             } else if (player->y < floor->height - 2 &&
                 tile_has_flag(target_tile, TILEFLAG_PUSHABLE) &&
                 !tile_has_flag(floor_get_tile(floor, player->x, player->y + 2), TILEFLAG_SOLID)) {
                     floor_set_tile(floor, player->x, player->y + 2, 2);
                     floor_set_tile(floor, player->x, player->y + 1, 0);
                     player->y = player->y + 1;
+                    return true;
             }
         }
         break;
@@ -65,12 +69,14 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
             target_tile = floor_get_tile(floor, player->x - 1, player->y);
             if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->x = player->x - 1;
+                return true;
             } else if(player->x > 1 &&
                 tile_has_flag(target_tile, TILEFLAG_PUSHABLE) &&
                 !tile_has_flag(floor_get_tile(floor, player->x - 2, player->y), TILEFLAG_SOLID)) {
                     floor_set_tile(floor, player->x - 2, player->y, 2);
                     floor_set_tile(floor, player->x - 1, player->y, 0);
                     player->x = player->x - 1;
+                    return true;
             }
         }
         break;
@@ -80,18 +86,21 @@ void player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
             target_tile = floor_get_tile(floor, player->x + 1, player->y);
             if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->x = player->x + 1;
+                return true;
             } else if(player->x < floor->width - 2 &&
                 tile_has_flag(target_tile, TILEFLAG_PUSHABLE) &&
                 !tile_has_flag(floor_get_tile(floor, player->x + 2, player->y), TILEFLAG_SOLID)) {
                     floor_set_tile(floor, player->x + 2, player->y, 2);
                     floor_set_tile(floor, player->x + 1, player->y, 0);
                     player->x = player->x + 1;
+                    return true;
             }
         }
         break;
     default:
         break;
     }
+    return false;
 }
 
 bool player_check_get_item(Floor_t * floor, Player_t * player)
