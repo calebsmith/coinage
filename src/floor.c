@@ -13,10 +13,12 @@ void floor_init(Floor_t * floor, FILE* infile)
     int x, i;
     int item_id, item_size, item_x, item_y;
 
-    if ((fscanf(infile, "%d", &floor->time)) != 1) {
+    if ((fscanf(infile, "%d", &floor->total_time)) != 1) {
         printf("Bad file format. No map time\n");
         exit(EXIT_STATUS_BAD_FILE);
     }
+    timer_init(&floor->timer);
+    floor->time_left = floor->total_time;
     if ((fscanf(infile, "%d,%d", &floor->width, &floor->height)) != 2) {
         printf("Bad file format. No map width/height\n");
         exit(EXIT_STATUS_BAD_FILE);
@@ -173,4 +175,14 @@ Stream_t floor_get_item_stream(Floor_t * floor, Box_t query)
     list_qtree_query_range(&(floor->items), query, &list);
     list_stream_init(&stream, &list);
     return stream;
+}
+
+void floor_increment_time(Floor_t * floor)
+{
+    int diff;
+    int time_left;
+
+    diff = timer_diff(&floor->timer);
+    time_left = floor->total_time - (diff / 1000);
+    floor->time_left = (time_left >= -1) ? time_left: -1;
 }

@@ -143,16 +143,20 @@ void render_inventory(Asset_t * assets, Player_t * player)
 
 void render_stats(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
-    char buffer[50] = "";
+    char buffer[100] = "";
 
     snprintf(buffer, sizeof(buffer), "Coins left: %d", floor->coins - player->coins);
-    render_text(assets, STATS_DISPLAY_X + 15, 15, buffer);
-    if (floor->time > 0) {
-        snprintf(buffer, sizeof(buffer), "Timer: %d", floor->time);
+    render_text(assets, STATS_DISPLAY_X + 15, 30, buffer);
+    if (floor->total_time > 0) {
+        if (floor->time_left >= 0) {
+            snprintf(buffer, sizeof(buffer), "Timer: %d", floor->time_left);
+        } else {
+            snprintf(buffer, sizeof(buffer), "Timer: %d", 0);
+        }
     } else {
         snprintf(buffer, sizeof(buffer), "Timer: ---");
     }
-    render_text(assets, STATS_DISPLAY_X + 15, 55, buffer);
+    render_text(assets, STATS_DISPLAY_X + 15, 80, buffer);
 }
 
 void render(Asset_t * assets, Floor_t * floor, Player_t * player)
@@ -206,25 +210,34 @@ bool get_input(SDL_Event event, Floor_t * floor, Player_t * player)
             tile_y = (event.motion.y - BOARD_OFFSET_Y) / TILEH;
             if (tile_x >= 0 && tile_x < TILE_DISPLAY_WIDTH &&
                 tile_y >= 0 && tile_y < TILE_DISPLAY_HEIGHT) {
-                printf("clicked %d %d\n", tile_x, tile_y);
+                // printf("clicked %d %d\n", tile_x, tile_y);
             }
         }
     }
     return true;
 }
 
+
 void logic(Floor_t * floor, Player_t * player)
 {
     player_check_get_item(floor, player);
+    floor_increment_time(floor);
 }
 
-void render_loop(Asset_t * assets, Floor_t * floor, Player_t * player)
+void play_loop(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
+    Timer_t fps_timer, tick_timer;
     SDL_Event event;
 
+    timer_init(&fps_timer);
+    timer_init(&tick_timer);
     while (get_input(event, floor, player)) {
         logic(floor, player);
+        if (timer_tick(&tick_timer, TICK_FREQ)) {
+            // printf("game tick\n");
+        }
         render(assets, floor, player);
+        timer_wait_fps(&fps_timer);
     }
 }
 

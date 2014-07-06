@@ -15,7 +15,9 @@ bool player_load_level(Floor_t * floor, Player_t * player, char * filename)
     player->y = floor->player_start_y;
     player->direction = PLAYER_DOWN;
     player->item_size = 0;
+    player->time = 0;
     player->coins = 0;
+    timer_reset(&floor->timer);
     return true;
 }
 

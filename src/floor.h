@@ -15,6 +15,7 @@
 
 #include "qtree.h"
 #include "item.h"
+#include "timer.h"
 
 #define TILE_DISPLAY_WIDTH 10
 #define TILE_DISPLAY_HEIGHT 10
@@ -44,10 +45,12 @@ static const int TILE_FLAG_LOOKUP [] = {
 
 typedef struct {
     int width, height;
-    int time;
+    int total_time;
+    int time_left;
     int player_start_x, player_start_y;
     int *tiles;
     int coins;
+    Timer_t timer;
     Item_t *item_storage;
     QTree_t items;
 } Floor_t;
@@ -59,6 +62,7 @@ void floor_set_tile(Floor_t * floor, int x, int y, int tile);
 int floor_get_x_offset(int x, int floor_width);
 int floor_get_y_offset(int y, int floor_height);
 Stream_t floor_get_item_stream(Floor_t * floor, Box_t query);
+void floor_increment_time(Floor_t * floor);
 void floor_destroy(Floor_t * floor);
 
 #endif

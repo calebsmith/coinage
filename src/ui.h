@@ -10,6 +10,7 @@
 #include "floor.h"
 #include "item.h"
 #include "player.h"
+#include "timer.h"
 #include "ui_init.h"
 
 #define TILEW 64
@@ -22,6 +23,8 @@
 #define TILE_DISPLAY_HEIGHT 10
 #define TILE_DISPLAY_MID_X (TILE_DISPLAY_WIDTH / 2)
 #define TILE_DISPLAY_MID_Y (TILE_DISPLAY_HEIGHT / 2)
+
+#define TICK_FREQ 800
 
 void render_text(Asset_t * assets, int x, int y, char * message);
 void render_tile(Asset_t * assets, int tile, int x, int y);
@@ -36,6 +39,6 @@ void logic(Floor_t * floor, Player_t * player);
 
 bool get_input(SDL_Event event, Floor_t * floor, Player_t * player);
 
-void render_loop(Asset_t * assets, Floor_t * floor, Player_t * player);
+void play_loop(Asset_t * assets, Floor_t * floor, Player_t * player);
 
 #endif

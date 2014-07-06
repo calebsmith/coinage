@@ -15,7 +15,7 @@ int main()
         printf("Failed to load map file\n");
         return 1;
     }
-    render_loop(&assets, &floor, &player);
+    play_loop(&assets, &floor, &player);
     floor_destroy(&floor);
     quit_ui(&assets);
     return 0;
