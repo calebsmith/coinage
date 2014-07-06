@@ -145,8 +145,13 @@ void render_stats(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     char buffer[100] = "";
 
-    snprintf(buffer, sizeof(buffer), "Coins left: %d", floor->coins - player->coins);
+    // Current Level
+    snprintf(buffer, sizeof(buffer), "Level: %u", floor->level_number);
     render_text(assets, STATS_DISPLAY_X + 15, 30, buffer);
+    // Coins left
+    snprintf(buffer, sizeof(buffer), "Coins left: %d", floor->coins - player->coins);
+    render_text(assets, STATS_DISPLAY_X + 15, 50, buffer);
+    // Time remaining
     if (floor->total_time > 0) {
         if (floor->time_left >= 0) {
             snprintf(buffer, sizeof(buffer), "Timer: %d", floor->time_left);
@@ -156,7 +161,7 @@ void render_stats(Asset_t * assets, Floor_t * floor, Player_t * player)
     } else {
         snprintf(buffer, sizeof(buffer), "Timer: ---");
     }
-    render_text(assets, STATS_DISPLAY_X + 15, 80, buffer);
+    render_text(assets, STATS_DISPLAY_X + 15, 90, buffer);
 }
 
 void render(Asset_t * assets, Floor_t * floor, Player_t * player)
@@ -218,27 +223,38 @@ bool get_input(SDL_Event event, Floor_t * floor, Player_t * player)
 }
 
 
-void logic(Floor_t * floor, Player_t * player)
+int logic(Timer_t * tick_timer, Floor_t * floor, Player_t * player)
 {
     player_check_get_item(floor, player);
     floor_increment_time(floor);
+    if (floor->coins - player->coins <= 0) {
+        return floor->level_number + 1;
+    }
+    if (timer_tick(tick_timer, TICK_FREQ)) {
+        // TODO: Events when game tick occurs
+    }
+    return 0;
 }
 
-void play_loop(Asset_t * assets, Floor_t * floor, Player_t * player)
+int play_loop(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     Timer_t fps_timer, tick_timer;
     SDL_Event event;
+    int result;
 
     timer_init(&fps_timer);
     timer_init(&tick_timer);
     while (get_input(event, floor, player)) {
-        logic(floor, player);
-        if (timer_tick(&tick_timer, TICK_FREQ)) {
-            // printf("game tick\n");
+        result = logic(&tick_timer, floor, player);
+        if (result != 0) {
+            if (result <= MAX_LEVEL) {
+                return result;
+            } else {
+                return 0;
+            }
         }
         render(assets, floor, player);
         timer_wait_fps(&fps_timer);
     }
+    return 0;
 }
-
-

@@ -17,8 +17,8 @@
 #include "item.h"
 #include "timer.h"
 
-#define TILE_DISPLAY_WIDTH 10
-#define TILE_DISPLAY_HEIGHT 10
+#define TILE_DISPLAY_WIDTH 11
+#define TILE_DISPLAY_HEIGHT 11
 #define TILE_DISPLAY_MID_X (TILE_DISPLAY_WIDTH / 2)
 #define TILE_DISPLAY_MID_Y (TILE_DISPLAY_HEIGHT / 2)
 
@@ -44,6 +44,7 @@ static const int TILE_FLAG_LOOKUP [] = {
 };
 
 typedef struct {
+    unsigned int level_number;
     int width, height;
     int total_time;
     int time_left;

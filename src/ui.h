@@ -19,12 +19,9 @@
 #define BOARD_OFFSET_X 0
 #define BOARD_OFFSET_Y 32
 
-#define TILE_DISPLAY_WIDTH 10
-#define TILE_DISPLAY_HEIGHT 10
-#define TILE_DISPLAY_MID_X (TILE_DISPLAY_WIDTH / 2)
-#define TILE_DISPLAY_MID_Y (TILE_DISPLAY_HEIGHT / 2)
-
 #define TICK_FREQ 800
+
+#define MAX_LEVEL 2
 
 void render_text(Asset_t * assets, int x, int y, char * message);
 void render_tile(Asset_t * assets, int tile, int x, int y);
@@ -35,10 +32,10 @@ void render_inventory(Asset_t * assets, Player_t * player);
 void render_stats(Asset_t * assets, Floor_t * floor, Player_t * player);
 void render(Asset_t * assets, Floor_t * floor, Player_t * player);
 
-void logic(Floor_t * floor, Player_t * player);
+int logic(Timer_t * tick_timer, Floor_t * floor, Player_t * player);
 
 bool get_input(SDL_Event event, Floor_t * floor, Player_t * player);
 
-void play_loop(Asset_t * assets, Floor_t * floor, Player_t * player);
+int play_loop(Asset_t * assets, Floor_t * floor, Player_t * player);
 
 #endif

@@ -1,14 +1,17 @@
 #include "player.h"
 
-bool player_load_level(Floor_t * floor, Player_t * player, char * filename)
+bool player_load_level(Floor_t * floor, Player_t * player, unsigned int level_number)
 {
+    char filename[500];
     FILE* infile;
 
+    snprintf(filename, sizeof(filename), "data/maps/floor%u.dat", level_number);
     if ((infile = fopen(filename, "r")) == NULL) {
         printf("Can't open file\n");
         return false;
     } else {
         floor_init(floor, infile);
+        floor->level_number = level_number;
         fclose(infile);
     }
     player->x = floor->player_start_x;
