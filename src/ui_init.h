@@ -23,6 +23,7 @@ typedef struct {
     Mix_Chunk *grunt_sound;
     Mix_Chunk *coin_sound;
     Mix_Chunk *win_sound;
+    Mix_Chunk *death_sound;
     TTF_Font *font;
 } Asset_t;
 

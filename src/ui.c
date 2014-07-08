@@ -1,18 +1,17 @@
 #include "ui.h"
 
-bool get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * player)
+int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     int tile_x, tile_y;
     bool move_result;
 
     if (SDL_PollEvent(&event) == 0) {
         // No event, carry on
-        return true;
+        return 0;
     }
-    if (event.type == SDL_QUIT ||
-        (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+    if (event.type == SDL_QUIT) {
         // Handle quitting
-        return false;
+        return -1;
     }
     // Handle arrow keys
     if (event.type == SDL_KEYDOWN) {
@@ -28,6 +27,10 @@ bool get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pl
             break;
         case SDLK_RIGHT:
             move_result = player_move(floor, player, PLAYER_RIGHT);
+            break;
+        case SDLK_ESCAPE:
+            Mix_PlayChannel(-1, assets->death_sound, 0);
+            return 1;
             break;
         default:
             move_result = true;
@@ -48,7 +51,7 @@ bool get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pl
             }
         }
     }
-    return true;
+    return 0;
 }
 
 int check_level_complete(Floor_t * floor, Player_t * player)
@@ -70,6 +73,10 @@ int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * pl
         return next_level;
     }
     floor_increment_time(floor);
+    if (floor->time_left < 0) {
+        Mix_PlayChannel(-1, assets->death_sound, 0);
+        return floor->level_number;
+    }
     if (timer_tick(tick_timer, TICK_FREQ)) {
         // TODO: Events when game tick occurs
     }
@@ -80,11 +87,15 @@ int play_loop(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     Timer_t fps_timer, tick_timer;
     SDL_Event event;
+    int input_result;
     int result;
 
     timer_init(&fps_timer);
     timer_init(&tick_timer);
-    while (get_input(event, assets, floor, player)) {
+    while ((input_result = get_input(event, assets, floor, player)) != - 1) {
+        if (input_result == 1) {
+            return floor->level_number;
+        }
         result = logic(&tick_timer, assets, floor, player);
         if (result != 0) {
             Mix_PlayChannel(-1, assets->win_sound, 0);

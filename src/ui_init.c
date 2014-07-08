@@ -7,6 +7,7 @@ bool init_ui(Asset_t * assets)
     assets->grunt_sound = NULL;
     assets->win_sound = NULL;
     assets->coin_sound = NULL;
+    assets->death_sound = NULL;
     // initialize SDL, the window, sound system, and fonting
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_EnableKeyRepeat(0, 0);
@@ -31,16 +32,21 @@ bool init_ui(Asset_t * assets)
     }
     assets->coin_sound = Mix_LoadWAV("data/sounds/coin.wav");
     if (assets->coin_sound == NULL) {
-        printf("Failed to load grunt sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf("Failed to load coin sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
         return false;
     }
     assets->win_sound = Mix_LoadWAV("data/sounds/win.wav");
     if (assets->win_sound == NULL) {
-        printf( "Failed to load grunt sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        printf( "Failed to load win sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
+        return false;
+    }
+    assets->death_sound = Mix_LoadWAV("data/sounds/death.wav");
+    if (assets->death_sound == NULL) {
+        printf( "Failed to load death sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
         return false;
     }
     // load tile graphics
-    assets->spritesheet = load_image("data/images/forest.jpg");
+    assets->spritesheet = load_image("data/images/tiles.jpg");
     if (!assets->spritesheet) {
         return false;
     }

@@ -182,7 +182,9 @@ void floor_increment_time(Floor_t * floor)
     int diff;
     int time_left;
 
-    diff = timer_diff(&floor->timer);
-    time_left = floor->total_time - (diff / 1000);
-    floor->time_left = (time_left >= -1) ? time_left: -1;
+    if (floor->total_time > 0) {
+        diff = timer_diff(&floor->timer);
+        time_left = floor->total_time - (diff / 1000);
+        floor->time_left = (time_left >= -1) ? time_left: -1;
+    }
 }
