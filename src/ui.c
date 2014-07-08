@@ -51,14 +51,25 @@ bool get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pl
     return true;
 }
 
+int check_level_complete(Floor_t * floor, Player_t * player)
+{
+    if (floor->coins - player->coins <= 0) {
+        if (floor_get_tile(floor, player->x, player->y) == 7) {
+            return (floor->level_number + 1);
+        }
+    }
+    return 0;
+}
 
 int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * player)
 {
+    int next_level;
+
     player_check_get_item(assets, floor, player);
-    floor_increment_time(floor);
-    if (floor->coins - player->coins <= 0) {
-        return floor->level_number + 1;
+    if (((next_level = check_level_complete(floor, player)) > 0)) {
+        return next_level;
     }
+    floor_increment_time(floor);
     if (timer_tick(tick_timer, TICK_FREQ)) {
         // TODO: Events when game tick occurs
     }

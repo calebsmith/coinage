@@ -25,6 +25,7 @@
 
 #define TILEFLAG_SOLID 1
 #define TILEFLAG_PUSHABLE 1 << 1
+#define TILEFLAG_BREAKABLE 2 << 1
 
 #define tile_has_flag(tile, flag) (!! (TILE_FLAG_LOOKUP[(tile)] & (1 << ((flag) - 1))))
 
@@ -41,6 +42,11 @@ static const int TILE_FLAG_LOOKUP [] = {
     0,
     0 | TILEFLAG_SOLID,
     0 | TILEFLAG_SOLID | TILEFLAG_PUSHABLE,
+    0 | TILEFLAG_SOLID | TILEFLAG_BREAKABLE,
+    0,
+    0,
+    0,
+    0,
 };
 
 typedef struct {
