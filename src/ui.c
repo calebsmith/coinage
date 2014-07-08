@@ -64,12 +64,24 @@ int check_level_complete(Floor_t * floor, Player_t * player)
     return 0;
 }
 
+int check_death(Floor_t * floor, Player_t * player)
+{
+    if (floor_get_tile(floor, player->x, player->y) == 4) {
+        return (floor->level_number);
+    }
+    return 0;
+}
+
 int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     int next_level;
 
     player_check_get_item(assets, floor, player);
     if (((next_level = check_level_complete(floor, player)) > 0)) {
+        return next_level;
+    }
+    if (((next_level = check_death(floor, player)) != 0)) {
+        Mix_PlayChannel(-1, assets->death_sound, 0);
         return next_level;
     }
     floor_increment_time(floor);

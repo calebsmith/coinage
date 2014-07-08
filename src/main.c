@@ -14,7 +14,7 @@ int main()
         printf("Failed to initialize a window or load required assets\n");
         return 1;
     }
-    if ((result = game_loop(&assets, &floor, &player, 1)) != 0) {
+    if ((result = game_loop(&assets, &floor, &player, 3)) != 0) {
         printf("Error code %d during game\n", result);
         return result;
     }
