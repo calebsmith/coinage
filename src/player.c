@@ -24,17 +24,17 @@ bool player_load_level(Floor_t * floor, Player_t * player, unsigned int level_nu
     return true;
 }
 
-bool player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
+bool player_move(Floor_t * floor, Player_t * player, int player_direction)
 {
     int current_tile, target_tile, next_tile;
 
     current_tile = floor_get_tile(floor, player->x, player->y);
-    switch (PLAYER_DIRECTION) {
+    switch (player_direction) {
     case PLAYER_UP:
         player->direction = PLAYER_UP;
         if (player->y > 0) {
             target_tile = floor_get_tile(floor, player->x, player->y - 1);
-            if (!tile_has_flag(current_tile, TILEFLAG_IMMOVABLE) && !tile_has_flag(target_tile, TILEFLAG_SOLID)) {
+            if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->y = player->y - 1;
                 return true;
             } else if (player->y > 1 && tile_has_flag(target_tile, TILEFLAG_PUSHABLE)) {
@@ -59,7 +59,7 @@ bool player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
         player->direction = PLAYER_DOWN;
         if (player->y < floor->height - 1) {
             target_tile = floor_get_tile(floor, player->x, player->y + 1);
-            if (!tile_has_flag(current_tile, TILEFLAG_IMMOVABLE) && !tile_has_flag(target_tile, TILEFLAG_SOLID)) {
+            if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->y = player->y + 1;
                 return true;
             } else if (player->y < floor->height - 2 && tile_has_flag(target_tile, TILEFLAG_PUSHABLE)) {
@@ -84,7 +84,7 @@ bool player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
         player->direction = PLAYER_LEFT;
         if (player->x > 0) {
             target_tile = floor_get_tile(floor, player->x - 1, player->y);
-            if (!tile_has_flag(current_tile, TILEFLAG_IMMOVABLE) && !tile_has_flag(target_tile, TILEFLAG_SOLID)) {
+            if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->x = player->x - 1;
                 return true;
             } else if(player->x > 1 && tile_has_flag(target_tile, TILEFLAG_PUSHABLE))  {
@@ -109,7 +109,7 @@ bool player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION)
         player->direction = PLAYER_RIGHT;
         if (player->x < floor->width - 1) {
             target_tile = floor_get_tile(floor, player->x + 1, player->y);
-            if (!tile_has_flag(current_tile, TILEFLAG_IMMOVABLE) && !tile_has_flag(target_tile, TILEFLAG_SOLID)) {
+            if (!tile_has_flag(target_tile, TILEFLAG_SOLID)) {
                 player->x = player->x + 1;
                 return true;
             } else if(player->x < floor->width - 2 && tile_has_flag(target_tile, TILEFLAG_PUSHABLE)) {

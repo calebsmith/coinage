@@ -20,7 +20,7 @@
 #define BOARD_OFFSET_X 0
 #define BOARD_OFFSET_Y 32
 
-#define TICK_FREQ 800
+#define TICK_FREQ 500
 
 #define MAX_LEVEL 3
 

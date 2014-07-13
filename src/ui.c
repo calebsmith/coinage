@@ -4,6 +4,7 @@ int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pla
 {
     int tile_x, tile_y;
     bool move_result;
+    int current_tile;
 
     if (SDL_PollEvent(&event) == 0) {
         // No event, carry on
@@ -15,29 +16,32 @@ int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pla
     }
     // Handle arrow keys
     if (event.type == SDL_KEYDOWN) {
-        switch (event.key.keysym.sym) {
-        case SDLK_UP:
-            move_result = player_move(floor, player, PLAYER_UP);
-            break;
-        case SDLK_DOWN:
-            move_result = player_move(floor, player, PLAYER_DOWN);
-            break;
-        case SDLK_LEFT:
-            move_result = player_move(floor, player, PLAYER_LEFT);
-            break;
-        case SDLK_RIGHT:
-            move_result = player_move(floor, player, PLAYER_RIGHT);
-            break;
-        case SDLK_ESCAPE:
-            Mix_PlayChannel(-1, assets->death_sound, 0);
-            return 1;
-            break;
-        default:
-            move_result = true;
-            break;
-        }
-        if (!move_result) {
-            Mix_PlayChannel(-1, assets->grunt_sound, 0);
+        current_tile = floor_get_tile(floor, player->x, player->y);
+        if (!tile_has_flag(current_tile, TILEFLAG_IMMOVABLE)) {
+            switch (event.key.keysym.sym) {
+            case SDLK_UP:
+                move_result = player_move(floor, player, PLAYER_UP);
+                break;
+            case SDLK_DOWN:
+                move_result = player_move(floor, player, PLAYER_DOWN);
+                break;
+            case SDLK_LEFT:
+                move_result = player_move(floor, player, PLAYER_LEFT);
+                break;
+            case SDLK_RIGHT:
+                move_result = player_move(floor, player, PLAYER_RIGHT);
+                break;
+            case SDLK_ESCAPE:
+                Mix_PlayChannel(-1, assets->death_sound, 0);
+                return 1;
+                break;
+            default:
+                move_result = true;
+                break;
+            }
+            if (!move_result) {
+                Mix_PlayChannel(-1, assets->grunt_sound, 0);
+            }
         }
     }
     // Handle mouse
@@ -93,20 +97,7 @@ int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * pl
     if (timer_tick(tick_timer, TICK_FREQ)) {
         current_tile = floor_get_tile(floor, player->x, player->y);
         if (tile_has_flag(current_tile, TILEFLAG_SLIPPERY)) {
-            switch (player->direction) {
-            case PLAYER_UP:
-                player->y--;
-                break;
-            case PLAYER_DOWN:
-                player->y++;
-                break;
-            case PLAYER_LEFT:
-                player->x--;
-                break;
-            case PLAYER_RIGHT:
-                player->x++;
-                break;
-            }
+            player_move(floor, player, player->direction);
         }
 
         // TODO: Events when game tick occurs
