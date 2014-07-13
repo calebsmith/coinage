@@ -75,6 +75,7 @@ int check_death(Floor_t * floor, Player_t * player)
 int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     int next_level;
+    int current_tile;
 
     player_check_get_item(assets, floor, player);
     if (((next_level = check_level_complete(floor, player)) > 0)) {
@@ -90,6 +91,24 @@ int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * pl
         return floor->level_number;
     }
     if (timer_tick(tick_timer, TICK_FREQ)) {
+        current_tile = floor_get_tile(floor, player->x, player->y);
+        if (tile_has_flag(current_tile, TILEFLAG_SLIPPERY)) {
+            switch (player->direction) {
+            case PLAYER_UP:
+                player->y--;
+                break;
+            case PLAYER_DOWN:
+                player->y++;
+                break;
+            case PLAYER_LEFT:
+                player->x--;
+                break;
+            case PLAYER_RIGHT:
+                player->x++;
+                break;
+            }
+        }
+
         // TODO: Events when game tick occurs
     }
     return 0;
