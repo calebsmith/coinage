@@ -26,9 +26,8 @@ bool player_load_level(Floor_t * floor, Player_t * player, unsigned int level_nu
 
 bool player_move(Floor_t * floor, Player_t * player, int player_direction)
 {
-    int current_tile, target_tile, next_tile;
+    int target_tile, next_tile;
 
-    current_tile = floor_get_tile(floor, player->x, player->y);
     switch (player_direction) {
     case PLAYER_UP:
         player->direction = PLAYER_UP;
@@ -41,6 +40,11 @@ bool player_move(Floor_t * floor, Player_t * player, int player_direction)
                 next_tile = floor_get_tile(floor, player->x, player->y - 2);
                 if (!tile_has_flag(next_tile, TILEFLAG_SOLID)) {
                     if (!tile_has_flag(next_tile, TILEFLAG_FILLABLE)) {
+                        floor_set_tile(floor, player->x, player->y - 2, 2);
+                        floor_set_tile(floor, player->x, player->y - 1, 0);
+                        player->y = player->y - 1;
+                        return true;
+                    } else if (tile_has_flag(next_tile, TILEFLAG_SLIPPERY)) {
                         floor_set_tile(floor, player->x, player->y - 2, 2);
                         floor_set_tile(floor, player->x, player->y - 1, 0);
                         player->y = player->y - 1;
@@ -119,6 +123,11 @@ bool player_move(Floor_t * floor, Player_t * player, int player_direction)
                         floor_set_tile(floor, player->x + 2, player->y, 2);
                         floor_set_tile(floor, player->x + 1, player->y, 0);
                         player->x = player->x + 1;
+                        return true;
+                    } else if (tile_has_flag(next_tile, TILEFLAG_SLIPPERY)) {
+                        floor_set_tile(floor, player->x + 2, player->y, 2);
+                        floor_set_tile(floor, player->x + 1, player->y, 0);
+                        player->y = player->y - 1;
                         return true;
                     } else {
                         floor_set_tile(floor, player->x + 2, player->y, 0);
