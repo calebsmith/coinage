@@ -31,10 +31,6 @@ int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pla
             case SDLK_RIGHT:
                 move_result = player_move(floor, player, PLAYER_RIGHT);
                 break;
-            case SDLK_ESCAPE:
-                Mix_PlayChannel(-1, assets->death_sound, 0);
-                return 1;
-                break;
             default:
                 move_result = true;
                 break;
@@ -42,6 +38,10 @@ int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pla
             if (!move_result) {
                 Mix_PlayChannel(-1, assets->grunt_sound, 0);
             }
+        }
+        if (event.key.keysym.sym == SDLK_ESCAPE) {
+            Mix_PlayChannel(-1, assets->death_sound, 0);
+            return 1;
         }
     }
     // Handle mouse
