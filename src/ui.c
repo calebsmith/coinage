@@ -17,7 +17,8 @@ int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pla
     // Handle arrow keys
     if (event.type == SDL_KEYDOWN) {
         current_tile = floor_get_tile(floor, player->x, player->y);
-        if (!tile_has_flag(current_tile, TILEFLAG_IMMOVABLE)) {
+        if (!tile_has_flag(current_tile, TILEFLAG_IMMOVABLE) ||
+            (tile_has_flag(current_tile, TILEFLAG_ICE) && player_has_item(player, ITEM_SKATE))) {
             switch (event.key.keysym.sym) {
             case SDLK_UP:
                 move_result = player_move(floor, player, PLAYER_UP);
@@ -76,7 +77,7 @@ int check_death(Floor_t * floor, Player_t * player)
     if (tile_has_flag(current_tile, TILEFLAG_WATER)) {
         return (floor->level_number);
     }
-    if (tile_has_flag(current_tile, TILEFLAG_FIRE)) {
+    if (tile_has_flag(current_tile, TILEFLAG_FIRE) && !player_has_item(player, ITEM_BOOT)) {
         return (floor->level_number);
     }
     return 0;
@@ -102,7 +103,7 @@ int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * pl
     }
     if (timer_tick(tick_timer, TICK_FREQ)) {
         current_tile = floor_get_tile(floor, player->x, player->y);
-        if (tile_has_flag(current_tile, TILEFLAG_SLIPPERY)) {
+        if (tile_has_flag(current_tile, TILEFLAG_SLIPPERY) && !player_has_item(player, ITEM_SKATE)) {
             player_move(floor, player, player->direction);
         }
 
