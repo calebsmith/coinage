@@ -5,6 +5,7 @@ void point_display(Point_t point)
     printf("{%d, %d}", point.x, point.y);
 }
 
+
 void box_display(Box_t box)
 {
     printf("{%d, %d} - {%d, %d}", box_get_w(box), box_get_n(box), box_get_e(box), box_get_s(box));

@@ -70,7 +70,13 @@ int check_level_complete(Floor_t * floor, Player_t * player)
 
 int check_death(Floor_t * floor, Player_t * player)
 {
-    if (floor_get_tile(floor, player->x, player->y) == 4) {
+    int current_tile;
+
+    current_tile = floor_get_tile(floor, player->x, player->y);
+    if (tile_has_flag(current_tile, TILEFLAG_WATER)) {
+        return (floor->level_number);
+    }
+    if (tile_has_flag(current_tile, TILEFLAG_FIRE)) {
         return (floor->level_number);
     }
     return 0;
