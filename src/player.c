@@ -17,7 +17,7 @@ bool player_load_level(Floor_t * floor, Player_t * player, unsigned int level_nu
     player->x = floor->player_start_x;
     player->y = floor->player_start_y;
     player->direction = PLAYER_DOWN;
-    player->item_size = 0;
+    player->item_flags = 0;
     player->time = 0;
     player->coins = 0;
     timer_reset(&floor->timer);
@@ -148,20 +148,17 @@ bool player_move(Floor_t * floor, Player_t * player, int player_direction)
 bool player_check_get_item(Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     Point_t position;
-    Item_t * item;
+    int * item;
 
-    if (player->item_size < PLAYER_MAX_ITEM_SIZE) {
-        position = (Point_t) {player->x, player->y};
-        if (qtree_pop(&(floor->items), position, (void **) &item)) {
-            if (item->id != 0) {
-                player->items[player->item_size] = *item;
-                player->item_size++;
-                return true;
-            } else {
-                player->coins++;
-                Mix_PlayChannel(-1, assets->coin_sound, 0);
-                return true;
-            }
+    position = (Point_t) {player->x, player->y};
+    if (qtree_pop(&(floor->items), position, (void *) &item)) {
+        if (*item != ITEM_COIN) {
+            player_add_item(player, *item);
+            return true;
+        } else {
+            player->coins++;
+            Mix_PlayChannel(-1, assets->coin_sound, 0);
+            return true;
         }
     }
     return false;

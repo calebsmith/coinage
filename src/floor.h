@@ -73,7 +73,7 @@ typedef struct {
     int *tiles;
     int coins;
     Timer_t timer;
-    Item_t *item_storage;
+    int *item_storage;
     QTree_t items;
 } Floor_t;
 

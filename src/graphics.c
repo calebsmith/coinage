@@ -31,12 +31,12 @@ void render_tile(Asset_t * assets, int tile, int x, int y)
     }
 }
 
-void render_item_on_map(Asset_t * assets, Item_t item, int x, int y)
+void render_item_on_map(Asset_t * assets, int item, int x, int y)
 {
     SDL_Rect sprite_offset, position;
 
     sprite_offset.x = 0;
-    sprite_offset.y = item.id * TILEH;
+    sprite_offset.y = item * TILEH;
     sprite_offset.w = TILEW;
     sprite_offset.h = TILEH;
     position.x = (x * TILEW) + BOARD_OFFSET_X;
@@ -52,7 +52,7 @@ void render_items(Asset_t * assets, Floor_t * floor, Player_t * player)
     Stream_t stream;
     Box_t query;
     TaggedData_t point_item;
-    Item_t item;
+    int item;
     Point_t point;
     int x_offset, y_offset;
     int map_x, map_y;
@@ -66,7 +66,7 @@ void render_items(Asset_t * assets, Floor_t * floor, Player_t * player)
     stream = floor_get_item_stream(floor, query);
     while(!list_stream_is_empty(&stream)) {
         point_item = **((TaggedData_t **) list_stream_get(&stream));
-        item = *(Item_t *) point_item.data;
+        item = *(int *) point_item.data;
         point = (Point_t) point_item.point;
         map_x = point.x + x_offset;
         map_y = point.y + y_offset;
@@ -123,20 +123,19 @@ void render_inventory(Asset_t * assets, Player_t * player)
 {
     SDL_Rect sprite_offset, position;
 
-    Item_t item;
     int i;
 
     sprite_offset.x = 0;
     sprite_offset.w = TILEW;
     sprite_offset.h = TILEH;
-    for (i = 0; i < player->item_size; i++) {
-        item = player->items[i];
-        position.x = ((TILE_DISPLAY_WIDTH + i) * TILEW) + BOARD_OFFSET_X;
-        position.y = ((TILE_DISPLAY_HEIGHT - 1) * TILEH) + BOARD_OFFSET_Y;
-
-        sprite_offset.y = item.id * TILEH;
-        if (assets->items != NULL) {
-            SDL_BlitSurface(assets->items, &sprite_offset, assets->buffer, &position);
+    for (i = 0; i < MAX_ITEM; i++) {
+        if (player_has_item(player, i)) {
+            position.x = ((TILE_DISPLAY_WIDTH + i - 1) * TILEW) + BOARD_OFFSET_X;
+            position.y = ((TILE_DISPLAY_HEIGHT - 1) * TILEH) + BOARD_OFFSET_Y;
+            sprite_offset.y = i * TILEH;
+            if (assets->items != NULL) {
+                SDL_BlitSurface(assets->items, &sprite_offset, assets->buffer, &position);
+            }
         }
     }
 }

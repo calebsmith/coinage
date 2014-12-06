@@ -69,7 +69,7 @@ void floor_init(Floor_t * floor, FILE* infile)
         printf("Bad file format. No item length given\n");
         exit(EXIT_STATUS_BAD_FILE);
     } else {
-        floor->item_storage = malloc(item_size * sizeof(Item_t));
+        floor->item_storage = malloc(item_size * sizeof(int));
         for (i = 0; i < item_size; i++) {
             if ((fscanf(infile, "%d:%d,%d", &item_id, &item_x, &item_y)) != 3) {
                 printf("Bad file format\n");
@@ -78,7 +78,7 @@ void floor_init(Floor_t * floor, FILE* infile)
                 if (item_id == 0) {
                     floor->coins++;
                 }
-                floor->item_storage[i] = (Item_t) {item_id};
+                floor->item_storage[i] = item_id;
                 qtree_insert(&floor->items, (Point_t) {item_x, item_y}, &floor->item_storage[i]);
             }
         }
