@@ -61,8 +61,11 @@ int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pla
 
 int check_level_complete(Floor_t * floor, Player_t * player)
 {
+    int current_tile;
+
+    current_tile = floor_get_tile(floor, player->x, player->y);
     if (floor->coins - player->coins <= 0) {
-        if (floor_get_tile(floor, player->x, player->y) == 7) {
+        if (tile_has_flag(current_tile, TILEFLAG_PORTAL)) {
             return (floor->level_number + 1);
         }
     }
