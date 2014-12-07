@@ -61,7 +61,7 @@ void render_items(Asset_t * assets, Floor_t * floor, Player_t * player)
     y_offset = floor_get_y_offset(player->y, floor->height);
     query = (Box_t) {
         (Point_t) {x_offset * -1, y_offset * -1},
-        TILE_DISPLAY_WIDTH - 1, TILE_DISPLAY_HEIGHT - 1
+        TILE_DISPLAY_WIDTH, TILE_DISPLAY_HEIGHT
     };
     stream = floor_get_item_stream(floor, query);
     while(!list_stream_is_empty(&stream)) {
