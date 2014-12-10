@@ -22,7 +22,7 @@
 
 #define TICK_FREQ 500
 
-#define MAX_LEVEL 6
+#define MAX_LEVEL 7
 
 int check_level_complete(Floor_t * floor, Player_t * player);
 int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * player);
