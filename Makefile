@@ -25,6 +25,5 @@ main.o: $(HEADERS) ui.o
 
 
 clean:
-	rm -f *.o
-	cp $(NAME) ../$(NAME)
+	rm -f src/*.o
 	rm $(NAME)
