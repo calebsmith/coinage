@@ -158,7 +158,7 @@ void list_qtree_query_range(QTree_t * qtree, Box_t range, LList_t * list)
     Point_t point;
 
     // Automatically abort if the range does not intersect this qtree
-    if (!box_intersects_box(range, qtree->boundary)) {
+    if (!box_intersects_box(qtree->boundary, range)) {
         return;
     }
     // Add qtree's data if it has any in range
