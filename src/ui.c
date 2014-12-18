@@ -1,10 +1,53 @@
 #include "ui.h"
 
+static int handle_keys(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * player);
+
+static int attempt_player_move(Asset_t * assets, Floor_t * floor, Player_t * player, int direction);
+
+int attempt_player_move(Asset_t * assets, Floor_t * floor, Player_t * player, int direction)
+{
+    int move_result;
+
+    move_result = player_move(floor, player, direction, false);
+    if (!move_result) {
+        Mix_PlayChannel(-1, assets->grunt_sound, 0);
+    }
+    return move_result;
+}
+
+int handle_keys(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * player)
+{
+    // Handle arrow keys
+    if (event.type == SDL_KEYDOWN) {
+        switch (event.key.keysym.sym) {
+        case SDLK_UP:
+            attempt_player_move(assets, floor, player, PLAYER_UP);
+            break;
+        case SDLK_DOWN:
+            attempt_player_move(assets, floor, player, PLAYER_DOWN);
+            break;
+        case SDLK_LEFT:
+            attempt_player_move(assets, floor, player, PLAYER_LEFT);
+            break;
+        case SDLK_RIGHT:
+            attempt_player_move(assets, floor, player, PLAYER_RIGHT);
+            break;
+        default:
+            break;
+        }
+        if (event.key.keysym.sym == SDLK_ESCAPE) {
+            Mix_PlayChannel(-1, assets->death_sound, 0);
+            return 1;
+        }
+    }
+    return 0;
+}
+
 int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     int tile_x, tile_y;
-    bool move_result;
-    int current_tile;
+    int player_display_x, player_display_y;
+    int diff_x, diff_y;
 
     if (SDL_PollEvent(&event) == 0) {
         // No event, carry on
@@ -14,36 +57,8 @@ int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pla
         // Handle quitting
         return -1;
     }
-    // Handle arrow keys
-    if (event.type == SDL_KEYDOWN) {
-        current_tile = floor_get_tile(floor, player->x, player->y);
-        if (!tile_has_flag(current_tile, TILEFLAG_IMMOVABLE) ||
-            (tile_has_flag(current_tile, TILEFLAG_ICE) && player_has_item(player, ITEM_SKATE))) {
-            switch (event.key.keysym.sym) {
-            case SDLK_UP:
-                move_result = player_move(floor, player, PLAYER_UP);
-                break;
-            case SDLK_DOWN:
-                move_result = player_move(floor, player, PLAYER_DOWN);
-                break;
-            case SDLK_LEFT:
-                move_result = player_move(floor, player, PLAYER_LEFT);
-                break;
-            case SDLK_RIGHT:
-                move_result = player_move(floor, player, PLAYER_RIGHT);
-                break;
-            default:
-                move_result = true;
-                break;
-            }
-            if (!move_result) {
-                Mix_PlayChannel(-1, assets->grunt_sound, 0);
-            }
-        }
-        if (event.key.keysym.sym == SDLK_ESCAPE) {
-            Mix_PlayChannel(-1, assets->death_sound, 0);
-            return 1;
-        }
+    if (handle_keys(event, assets, floor, player)) {
+        return 1;
     }
     // Handle mouse
     if (event.type == SDL_MOUSEBUTTONDOWN) {
@@ -52,7 +67,22 @@ int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * pla
             tile_y = (event.motion.y - BOARD_OFFSET_Y) / TILEH;
             if (tile_x >= 0 && tile_x < TILE_DISPLAY_WIDTH &&
                 tile_y >= 0 && tile_y < TILE_DISPLAY_HEIGHT) {
-                // printf("clicked %d %d\n", tile_x, tile_y);
+                player_display_x = player->x + floor_get_x_offset(player->x, floor->width);
+                player_display_y = player->y + floor_get_y_offset(player->y, floor->height);
+                diff_x = tile_x - player_display_x;
+                diff_y = tile_y - player_display_y;
+                if (diff_x == 0 && diff_y < 0) {
+                    attempt_player_move(assets, floor, player, PLAYER_UP);
+                }
+                if (diff_x > 0 && diff_y == 0) {
+                    attempt_player_move(assets, floor, player, PLAYER_RIGHT);
+                }
+                if (diff_x == 0 && diff_y > 0) {
+                    attempt_player_move(assets, floor, player, PLAYER_DOWN);
+                }
+                if (diff_x < 0 && diff_y == 0) {
+                    attempt_player_move(assets, floor, player, PLAYER_LEFT);
+                }
             }
         }
     }
@@ -107,7 +137,7 @@ int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * pl
     if (timer_tick(tick_timer, TICK_FREQ)) {
         current_tile = floor_get_tile(floor, player->x, player->y);
         if (tile_has_flag(current_tile, TILEFLAG_SLIPPERY) && !player_has_item(player, ITEM_SKATE)) {
-            player_move(floor, player, player->direction);
+            player_move(floor, player, player->direction, true);
         }
 
         // TODO: Events when game tick occurs

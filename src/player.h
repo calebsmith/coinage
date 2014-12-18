@@ -26,7 +26,7 @@ typedef struct {
 } Player_t;
 
 bool player_load_level(Floor_t * floor, Player_t * player, unsigned int level_number);
-bool player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION);
+bool player_move(Floor_t * floor, Player_t * player, int PLAYER_DIRECTION, bool force);
 bool player_check_get_item(Asset_t * assets, Floor_t * floor, Player_t * player);
 
 #define player_has_item(player, item) (!! ((player->item_flags) & (1 << (item))))

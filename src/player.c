@@ -24,9 +24,16 @@ bool player_load_level(Floor_t * floor, Player_t * player, unsigned int level_nu
     return true;
 }
 
-bool player_move(Floor_t * floor, Player_t * player, int player_direction)
+bool player_move(Floor_t * floor, Player_t * player, int player_direction, bool force)
 {
-    int target_tile, next_tile;
+    int current_tile, target_tile, next_tile;
+
+    current_tile = floor_get_tile(floor, player->x, player->y);
+
+    if (!force && (tile_has_flag(current_tile, TILEFLAG_ICE) && !(player_has_item(player, ITEM_SKATE)))) {
+        // Early exit if player attempts to move on ice w/o skates
+        return false;
+    }
 
     switch (player_direction) {
     case PLAYER_UP:
