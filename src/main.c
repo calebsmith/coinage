@@ -2,19 +2,28 @@
 
 int game_loop(Asset_t * assets, Floor_t * floor, Player_t * player, unsigned int level_number);
 
-int main()
+int main(int argc, char ** argv)
 {
     Asset_t assets;
     Floor_t floor;
     Player_t player;
+    int initial_floor = 1;
     int result;
+
+#ifdef DEBUG
+    // Allows DEBUG builds to load from any floor number from command line
+    if (argc > 1) {
+        initial_floor = atoi(argv[1]);
+        printf("Loading floor%d\n", initial_floor);
+    }
+#endif
 
     if (!init_ui(&assets)) {
         quit_ui(&assets);
         printf("Failed to initialize a window or load required assets\n");
         return 1;
     }
-    if ((result = game_loop(&assets, &floor, &player, 1)) != 0) {
+    if ((result = game_loop(&assets, &floor, &player, initial_floor)) != 0) {
         printf("Error code %d during game\n", result);
         return result;
     }
