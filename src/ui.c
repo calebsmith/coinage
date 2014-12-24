@@ -105,12 +105,21 @@ int check_level_complete(Floor_t * floor, Player_t * player)
 int check_death(Floor_t * floor, Player_t * player)
 {
     int current_tile;
+    int *mob = NULL;
 
     current_tile = floor_get_tile(floor, player->x, player->y);
     if (tile_has_flag(current_tile, TILEFLAG_WATER)) {
         return (floor->level_number);
     }
     if (tile_has_flag(current_tile, TILEFLAG_FIRE) && !player_has_item(player, ITEM_BOOT)) {
+        return (floor->level_number);
+    }
+    // Running into mob
+    if (qtree_peek(&(floor->mobs), (Point_t) {player->x, player->y}, (void *) &mob)) {
+        if (player_has_item(player, ITEM_SWORD)) {
+            qtree_pop(&(floor->mobs), (Point_t) {player->x, player->y}, (void *) &mob);
+            return 0;
+        }
         return (floor->level_number);
     }
     return 0;

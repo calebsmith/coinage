@@ -12,6 +12,7 @@ void floor_init(Floor_t * floor, FILE* infile)
     int size;
     int x, i;
     int item_id, item_size, item_x, item_y;
+    int mob_id, mob_size, mob_x, mob_y;
 
     if ((fscanf(infile, "%d", &floor->total_time)) != 1) {
         printf("Bad file format. No map time\n");
@@ -63,6 +64,7 @@ void floor_init(Floor_t * floor, FILE* infile)
             }
         }
     }
+    // Load items
     floor->items = qtree_init((Box_t) {(Point_t) {0, 0}, floor->width, floor->height});
     floor->coins = 0;
     if ((fscanf(infile, "%d", &item_size)) != 1) {
@@ -72,7 +74,7 @@ void floor_init(Floor_t * floor, FILE* infile)
         floor->item_storage = malloc(item_size * sizeof(int));
         for (i = 0; i < item_size; i++) {
             if ((fscanf(infile, "%d:%d,%d", &item_id, &item_x, &item_y)) != 3) {
-                printf("Bad file format\n");
+                printf("Bad file format reading item data\n");
                 exit(EXIT_STATUS_BAD_FILE);
             } else {
                 if (item_id == 0) {
@@ -80,6 +82,23 @@ void floor_init(Floor_t * floor, FILE* infile)
                 }
                 floor->item_storage[i] = item_id;
                 qtree_insert(&floor->items, (Point_t) {item_x, item_y}, &floor->item_storage[i]);
+            }
+        }
+    }
+    // Load mobs
+    floor->mobs = qtree_init((Box_t) {(Point_t) {0, 0}, floor->width, floor->height});
+    if ((fscanf(infile, "%d", &mob_size)) != 1) {
+        printf("Bad file format. No mob length given\n");
+        exit(EXIT_STATUS_BAD_FILE);
+    } else {
+        floor->mob_storage = malloc(mob_size * sizeof(int));
+        for (i = 0; i < mob_size; i++) {
+            if ((fscanf(infile, "%d:%d,%d", &mob_id, &mob_x, &mob_y)) != 3) {
+                printf("Bad file format reading mob data\n");
+                exit(EXIT_STATUS_BAD_FILE);
+            } else {
+                floor->mob_storage[i] = mob_id;
+                qtree_insert(&floor->mobs, (Point_t) {mob_x, mob_y}, &floor->mob_storage[i]);
             }
         }
     }
@@ -126,6 +145,10 @@ void floor_destroy(Floor_t * floor)
         free(floor->item_storage);
     }
     qtree_destroy(&floor->items);
+    if (floor->mob_storage) {
+        free(floor->mob_storage);
+    }
+    qtree_destroy(&floor->mobs);
 }
 
 void floor_display(const Floor_t * floor)
@@ -173,6 +196,17 @@ Stream_t floor_get_item_stream(Floor_t * floor, Box_t query)
 
     list_init(&list, NULL);
     list_qtree_query_range(&(floor->items), query, &list);
+    list_stream_init(&stream, &list);
+    return stream;
+}
+
+Stream_t floor_get_mob_stream(Floor_t * floor, Box_t query)
+{
+    LList_t list;
+    Stream_t stream;
+
+    list_init(&list, NULL);
+    list_qtree_query_range(&(floor->mobs), query, &list);
     list_stream_init(&stream, &list);
     return stream;
 }

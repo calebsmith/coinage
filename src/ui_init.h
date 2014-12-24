@@ -19,6 +19,7 @@ typedef struct {
     SDL_Surface *buffer;
     SDL_Surface *spritesheet;
     SDL_Surface *items;
+    SDL_Surface *mobs;
     SDL_Surface *player;
     Mix_Chunk *grunt_sound;
     Mix_Chunk *coin_sound;

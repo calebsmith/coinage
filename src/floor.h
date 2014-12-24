@@ -79,6 +79,8 @@ typedef struct {
     Timer_t timer;
     int *item_storage;
     QTree_t items;
+    int *mob_storage;
+    QTree_t mobs;
 } Floor_t;
 
 void floor_init(Floor_t * floor, FILE* infile);
@@ -88,6 +90,7 @@ void floor_set_tile(Floor_t * floor, int x, int y, int tile);
 int floor_get_x_offset(int x, int floor_width);
 int floor_get_y_offset(int y, int floor_height);
 Stream_t floor_get_item_stream(Floor_t * floor, Box_t query);
+Stream_t floor_get_mob_stream(Floor_t * floor, Box_t query);
 void floor_increment_time(Floor_t * floor);
 void floor_destroy(Floor_t * floor);
 

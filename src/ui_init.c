@@ -60,6 +60,11 @@ bool init_ui(Asset_t * assets)
     if (!assets->items) {
         return false;
     }
+    // load mob graphics
+    assets->mobs = load_image("data/images/mobs.png");
+    if (!assets->mobs) {
+        return false;
+    }
     // load fonts
     assets->font = TTF_OpenFont("data/fonts/NotCourierSans.otf", 20);
     if (!assets->font) {
