@@ -68,7 +68,7 @@ static void render_mobs(Asset_t * assets, Floor_t * floor, Player_t * player)
     Stream_t stream;
     Box_t query;
     TaggedData_t point_mob;
-    int mob;
+    Mob_t mob;
     Point_t point;
     int x_offset, y_offset;
     int map_x, map_y;
@@ -82,13 +82,13 @@ static void render_mobs(Asset_t * assets, Floor_t * floor, Player_t * player)
     stream = floor_get_mob_stream(floor, query);
     while(!list_stream_is_empty(&stream)) {
         point_mob = **((TaggedData_t **) list_stream_get(&stream));
-        mob = *(int *) point_mob.data;
+        mob = *(Mob_t *) point_mob.data;
         point = (Point_t) point_mob.point;
         map_x = point.x + x_offset;
         map_y = point.y + y_offset;
         if ((map_x >= 0 && map_x < TILE_DISPLAY_WIDTH) &&
             (map_y >= 0 && map_y < TILE_DISPLAY_HEIGHT)) {
-            render_mob_on_map(assets, mob, map_x, map_y);
+            render_mob_on_map(assets, mob.id, map_x, map_y);
         }
     }
     list_destroy(stream.list);

@@ -15,12 +15,20 @@
 
 #include "qtree.h"
 #include "item.h"
+#include "mob.h"
 #include "timer.h"
 
 #define TILE_DISPLAY_WIDTH 11
 #define TILE_DISPLAY_HEIGHT 11
 #define TILE_DISPLAY_MID_X (TILE_DISPLAY_WIDTH / 2)
 #define TILE_DISPLAY_MID_Y (TILE_DISPLAY_HEIGHT / 2)
+
+enum {
+    PLAYER_UP,
+    PLAYER_RIGHT,
+    PLAYER_DOWN,
+    PLAYER_LEFT,
+};
 
 enum {
     TILEFLAG_SOLID,
@@ -79,7 +87,7 @@ typedef struct {
     Timer_t timer;
     int *item_storage;
     QTree_t items;
-    int *mob_storage;
+    Mob_t *mob_storage;
     QTree_t mobs;
 } Floor_t;
 
@@ -93,5 +101,8 @@ Stream_t floor_get_item_stream(Floor_t * floor, Box_t query);
 Stream_t floor_get_mob_stream(Floor_t * floor, Box_t query);
 void floor_increment_time(Floor_t * floor);
 void floor_destroy(Floor_t * floor);
+
+bool floor_mob_move(Floor_t * floor, Mob_t * mob, Point_t src, Point_t dest);
+bool floor_mob_can_move(Floor_t * floor, Point_t dest);
 
 #endif

@@ -125,6 +125,66 @@ int check_death(Floor_t * floor, Player_t * player)
     return 0;
 }
 
+void mob_turn(Floor_t * floor, Player_t * player)
+{
+    Stream_t stream;
+    Box_t query;
+    TaggedData_t point_mob;
+    Mob_t * mob;
+    Point_t point;
+    int x_offset, y_offset;
+
+    x_offset = floor_get_x_offset(player->x, floor->width);
+    y_offset = floor_get_y_offset(player->y, floor->height);
+    query = (Box_t) {
+        (Point_t) {x_offset * -1, y_offset * -1},
+        TILE_DISPLAY_WIDTH, TILE_DISPLAY_HEIGHT
+    };
+    stream = floor_get_mob_stream(floor, query);
+    while(!list_stream_is_empty(&stream)) {
+        point_mob = **((TaggedData_t **) list_stream_get(&stream));
+        mob = (Mob_t *) point_mob.data;
+        point = (Point_t) point_mob.point;
+        mob_ai(floor, player, point, mob);
+    }
+    list_destroy(stream.list);
+
+}
+
+void mob_ai(Floor_t * floor, Player_t * player, Point_t point, Mob_t * mob)
+{
+    Point_t dest;
+
+    if (point.x > player->x) {
+        dest = (Point_t) {point.x - 1, point.y};
+        if (floor_mob_can_move(floor, dest)) {
+            floor_mob_move(floor, mob, point, dest);
+            return;
+        }
+    }
+    if (point.x < player->x) {
+        dest = (Point_t) {point.x + 1, point.y};
+        if (floor_mob_can_move(floor, dest)) {
+            floor_mob_move(floor, mob, point, dest);
+            return;
+        }
+    }
+    if (point.y < player->y) {
+        dest = (Point_t) {point.x, point.y + 1};
+        if (floor_mob_can_move(floor, dest)) {
+            floor_mob_move(floor, mob, point, dest);
+            return;
+        }
+    }
+    if (point.y > player->y) {
+        dest = (Point_t) {point.x, point.y - 1};
+        if (floor_mob_can_move(floor, dest)) {
+            floor_mob_move(floor, mob, point, dest);
+            return;
+        }
+    }
+}
+
 int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * player)
 {
     int next_level;
@@ -144,12 +204,12 @@ int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * pl
         return floor->level_number;
     }
     if (timer_tick(tick_timer, TICK_FREQ)) {
+        // Events that automatically move player
         current_tile = floor_get_tile(floor, player->x, player->y);
         if (tile_has_flag(current_tile, TILEFLAG_SLIPPERY) && !player_has_item(player, ITEM_SKATE)) {
             player_move(floor, player, player->direction, true);
         }
-
-        // TODO: Events when game tick occurs
+        mob_turn(floor, player);
     }
     return 0;
 }

@@ -10,6 +10,7 @@
 
 #include "floor.h"
 #include "item.h"
+#include "mob.h"
 #include "player.h"
 #include "timer.h"
 #include "ui.h"

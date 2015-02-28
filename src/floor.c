@@ -91,13 +91,13 @@ void floor_init(Floor_t * floor, FILE* infile)
         printf("Bad file format. No mob length given\n");
         exit(EXIT_STATUS_BAD_FILE);
     } else {
-        floor->mob_storage = malloc(mob_size * sizeof(int));
+        floor->mob_storage = malloc(mob_size * sizeof(Mob_t));
         for (i = 0; i < mob_size; i++) {
             if ((fscanf(infile, "%d:%d,%d", &mob_id, &mob_x, &mob_y)) != 3) {
                 printf("Bad file format reading mob data\n");
                 exit(EXIT_STATUS_BAD_FILE);
             } else {
-                floor->mob_storage[i] = mob_id;
+                floor->mob_storage[i] = (Mob_t) {mob_id, MOB_WANDER, PLAYER_UP};
                 qtree_insert(&floor->mobs, (Point_t) {mob_x, mob_y}, &floor->mob_storage[i]);
             }
         }
@@ -221,4 +221,20 @@ void floor_increment_time(Floor_t * floor)
         time_left = floor->total_time - (diff / 1000);
         floor->time_left = (time_left >= -1) ? time_left: -1;
     }
+}
+
+
+bool floor_mob_move(Floor_t * floor, Mob_t * mob, Point_t src, Point_t dest)
+{
+    if (qtree_pop(&(floor->mobs), src, (void *) &mob)) {
+        qtree_insert(&(floor->mobs), dest, mob);
+        return true;
+    }
+    return false;
+}
+
+bool floor_mob_can_move(Floor_t * floor, Point_t dest)
+{
+    int goal_tile = floor_get_tile(floor, dest.x, dest.y);
+    return !tile_has_flag(goal_tile, TILEFLAG_SOLID);
 }

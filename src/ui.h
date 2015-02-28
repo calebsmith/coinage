@@ -9,6 +9,7 @@
 
 #include "floor.h"
 #include "item.h"
+#include "mob.h"
 #include "player.h"
 #include "timer.h"
 #include "ui_init.h"
@@ -20,11 +21,13 @@
 #define BOARD_OFFSET_X 0
 #define BOARD_OFFSET_Y 32
 
-#define TICK_FREQ 300
+#define TICK_FREQ 800
 
 #define MAX_LEVEL 7
 
 int check_level_complete(Floor_t * floor, Player_t * player);
+void mob_turn(Floor_t * floor, Player_t * player);
+void mob_ai(Floor_t * floor, Player_t * player, Point_t point, Mob_t * mob);
 int logic(Timer_t * tick_timer, Asset_t * assets, Floor_t * floor, Player_t * player);
 int get_input(SDL_Event event, Asset_t * assets, Floor_t * floor, Player_t * player);
 int play_loop(Asset_t * assets, Floor_t * floor, Player_t * player);

@@ -10,13 +10,6 @@
 
 #define PLAYER_MAX_ITEM_SIZE 20
 
-enum {
-    PLAYER_UP,
-    PLAYER_RIGHT,
-    PLAYER_DOWN,
-    PLAYER_LEFT,
-};
-
 typedef struct {
     int x, y;
     int direction;
