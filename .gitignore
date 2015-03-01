@@ -1,3 +1,4 @@
 /coinage
+coinage-*.tar.gz
 *.o
 /src/tags
