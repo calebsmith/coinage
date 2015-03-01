@@ -227,6 +227,16 @@ void floor_increment_time(Floor_t * floor)
 bool floor_mob_move(Floor_t * floor, Mob_t * mob, Point_t src, Point_t dest)
 {
     if (qtree_pop(&(floor->mobs), src, (void *) &mob)) {
+        if (dest.x > src.x) {
+            mob->direction = PLAYER_RIGHT;
+        } else if (dest.x < src.x) {
+            mob->direction = PLAYER_LEFT;
+        }
+        if (dest.y > src.y) {
+            mob->direction = PLAYER_DOWN;
+        } else if (dest.y < src.y) {
+            mob->direction = PLAYER_UP;
+        }
         qtree_insert(&(floor->mobs), dest, mob);
         return true;
     }
@@ -236,5 +246,5 @@ bool floor_mob_move(Floor_t * floor, Mob_t * mob, Point_t src, Point_t dest)
 bool floor_mob_can_move(Floor_t * floor, Point_t dest)
 {
     int goal_tile = floor_get_tile(floor, dest.x, dest.y);
-    return !tile_has_flag(goal_tile, TILEFLAG_SOLID);
+    return !(tile_has_flag(goal_tile, TILEFLAG_SOLID) || tile_has_flag(goal_tile, TILEFLAG_NOMOB));
 }

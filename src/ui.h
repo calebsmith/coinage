@@ -21,9 +21,9 @@
 #define BOARD_OFFSET_X 0
 #define BOARD_OFFSET_Y 32
 
-#define TICK_FREQ 800
+#define TICK_FREQ 300
 
-#define MAX_LEVEL 7
+#define MAX_LEVEL 8
 
 int check_level_complete(Floor_t * floor, Player_t * player);
 void mob_turn(Floor_t * floor, Player_t * player);
