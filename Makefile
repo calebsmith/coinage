@@ -27,3 +27,4 @@ main.o: $(HEADERS) ui.o
 clean:
 	rm -f src/*.o
 	rm $(NAME)
+	rm $(NAME)-linux64.tar.gz
