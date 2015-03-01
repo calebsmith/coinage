@@ -155,36 +155,78 @@ void mob_ai(Floor_t * floor, Player_t * player, Point_t point, Mob_t * mob)
 {
     Point_t dest;
 
-    if (abs(point.x - player->x) > abs(point.y - player->y)) {
-        if (point.x > player->x) {
-            dest = (Point_t) {point.x - 1, point.y};
-            if (floor_mob_can_move(floor, dest)) {
-                floor_mob_move(floor, mob, point, dest);
-                return;
+    if (mob->ai == MOB_FOLLOW) {
+        if (abs(point.x - player->x) > abs(point.y - player->y)) {
+            if (point.x > player->x) {
+                dest = (Point_t) {point.x - 1, point.y};
+                if (floor_mob_can_move(floor, dest)) {
+                    floor_mob_move(floor, mob, point, dest);
+                    return;
+                }
+            }
+            if (point.x < player->x) {
+                dest = (Point_t) {point.x + 1, point.y};
+                if (floor_mob_can_move(floor, dest)) {
+                    floor_mob_move(floor, mob, point, dest);
+                    return;
+                }
+            }
+        } else {
+            if (point.y < player->y) {
+                dest = (Point_t) {point.x, point.y + 1};
+                if (floor_mob_can_move(floor, dest)) {
+                    floor_mob_move(floor, mob, point, dest);
+                    return;
+                }
+            }
+            if (point.y > player->y) {
+                dest = (Point_t) {point.x, point.y - 1};
+                if (floor_mob_can_move(floor, dest)) {
+                    floor_mob_move(floor, mob, point, dest);
+                    return;
+                }
             }
         }
-        if (point.x < player->x) {
-            dest = (Point_t) {point.x + 1, point.y};
+    }
+    if (mob->ai == MOB_SENTRY) {
+        switch(mob->direction) {
+            case PLAYER_UP:
+                dest = (Point_t) {point.x, point.y - 1};
+                break;
+            case PLAYER_DOWN:
+                dest = (Point_t) {point.x, point.y + 1};
+                break;
+            case PLAYER_LEFT:
+                dest = (Point_t) {point.x - 1, point.y};
+                break;
+            case PLAYER_RIGHT:
+                dest = (Point_t) {point.x + 1, point.y};
+                break;
+        }
+        if (floor_mob_can_move(floor, dest)) {
+            floor_mob_move(floor, mob, point, dest);
+            return;
+        } else {
+            // Swap directions if blocked
+            switch(mob->direction) {
+                case PLAYER_UP:
+                    dest = (Point_t) {point.x, point.y + 1};
+                    break;
+                case PLAYER_DOWN:
+                    dest = (Point_t) {point.x, point.y - 1};
+                    break;
+                case PLAYER_LEFT:
+                    dest = (Point_t) {point.x + 1, point.y};
+                    break;
+                case PLAYER_RIGHT:
+                    dest = (Point_t) {point.x - 1, point.y};
+                    break;
+            }
             if (floor_mob_can_move(floor, dest)) {
                 floor_mob_move(floor, mob, point, dest);
-                return;
             }
         }
-    } else {
-        if (point.y < player->y) {
-            dest = (Point_t) {point.x, point.y + 1};
-            if (floor_mob_can_move(floor, dest)) {
-                floor_mob_move(floor, mob, point, dest);
-                return;
-            }
-        }
-        if (point.y > player->y) {
-            dest = (Point_t) {point.x, point.y - 1};
-            if (floor_mob_can_move(floor, dest)) {
-                floor_mob_move(floor, mob, point, dest);
-                return;
-            }
-        }
+
     }
 }
 

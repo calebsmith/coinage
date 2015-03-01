@@ -5,12 +5,15 @@
 #include <stdlib.h>
 
 enum {
-    MOB_WANDER,
+    MOB_FOLLOW,
+    MOB_SENTRY,
+    MOB_STATIONARY,
+    MOB_MAXAI,
 };
 
 typedef struct {
     int id;
-    int state;
+    int ai;
     int direction;
 } Mob_t;
 

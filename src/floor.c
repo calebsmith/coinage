@@ -12,7 +12,7 @@ void floor_init(Floor_t * floor, FILE* infile)
     int size;
     int x, i;
     int item_id, item_size, item_x, item_y;
-    int mob_id, mob_size, mob_x, mob_y;
+    int mob_id, mob_size, mob_x, mob_y, mob_ai, mob_direction;
 
     if ((fscanf(infile, "%d", &floor->total_time)) != 1) {
         printf("Bad file format. No map time\n");
@@ -93,11 +93,19 @@ void floor_init(Floor_t * floor, FILE* infile)
     } else {
         floor->mob_storage = malloc(mob_size * sizeof(Mob_t));
         for (i = 0; i < mob_size; i++) {
-            if ((fscanf(infile, "%d:%d,%d", &mob_id, &mob_x, &mob_y)) != 3) {
+            if ((fscanf(infile, "%d,%d,%d:%d,%d", &mob_id, &mob_ai, &mob_direction, &mob_x, &mob_y)) != 5) {
                 printf("Bad file format reading mob data\n");
                 exit(EXIT_STATUS_BAD_FILE);
             } else {
-                floor->mob_storage[i] = (Mob_t) {mob_id, MOB_WANDER, PLAYER_UP};
+                if (mob_ai >= MOB_MAXAI) {
+                    printf("Illegal mob AI flag in mob data\n");
+                    exit(EXIT_STATUS_BAD_FILE);
+                }
+                if (mob_direction > 3) {
+                    printf("Illegal mob direction in mob data\n");
+                    exit(EXIT_STATUS_BAD_FILE);
+                }
+                floor->mob_storage[i] = (Mob_t) {mob_id, mob_ai, mob_direction};
                 qtree_insert(&floor->mobs, (Point_t) {mob_x, mob_y}, &floor->mob_storage[i]);
             }
         }
