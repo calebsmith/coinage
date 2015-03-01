@@ -246,5 +246,12 @@ bool floor_mob_move(Floor_t * floor, Mob_t * mob, Point_t src, Point_t dest)
 bool floor_mob_can_move(Floor_t * floor, Point_t dest)
 {
     int goal_tile = floor_get_tile(floor, dest.x, dest.y);
-    return !(tile_has_flag(goal_tile, TILEFLAG_SOLID) || tile_has_flag(goal_tile, TILEFLAG_NOMOB));
+
+    return !(
+            tile_has_flag(goal_tile, TILEFLAG_SOLID) ||
+            tile_has_flag(goal_tile, TILEFLAG_NOMOB) ||
+            tile_has_flag(goal_tile, TILEFLAG_WATER) ||
+            tile_has_flag(goal_tile, TILEFLAG_PUSHABLE) ||
+            tile_has_flag(goal_tile, TILEFLAG_FIRE)
+    );
 }
