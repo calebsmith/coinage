@@ -245,12 +245,19 @@ bool floor_mob_move(Floor_t * floor, Mob_t * mob, Point_t src, Point_t dest)
 
 bool floor_mob_can_move(Floor_t * floor, Point_t dest)
 {
-    int goal_tile = floor_get_tile(floor, dest.x, dest.y);
+    Mob_t * existing;
+    int goal_tile;
 
+    if (qtree_peek(&(floor->mobs), dest, (void *) &existing)) {
+        // Can not walk on top of other mob
+        return false;
+    }
+    goal_tile = floor_get_tile(floor, dest.x, dest.y);
     return !(
             tile_has_flag(goal_tile, TILEFLAG_SOLID) ||
             tile_has_flag(goal_tile, TILEFLAG_NOMOB) ||
             tile_has_flag(goal_tile, TILEFLAG_WATER) ||
+            tile_has_flag(goal_tile, TILEFLAG_SLIPPERY) ||
             tile_has_flag(goal_tile, TILEFLAG_PUSHABLE) ||
             tile_has_flag(goal_tile, TILEFLAG_FIRE)
     );
