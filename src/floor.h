@@ -85,6 +85,7 @@ typedef struct {
     int total_time;
     int time_left;
     int player_start_x, player_start_y;
+    int limit_mob_vision;
     int *tiles;
     int coins;
     Timer_t timer;

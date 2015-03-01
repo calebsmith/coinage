@@ -136,10 +136,16 @@ void mob_turn(Floor_t * floor, Player_t * player)
 
     x_offset = floor_get_x_offset(player->x, floor->width);
     y_offset = floor_get_y_offset(player->y, floor->height);
-    query = (Box_t) {
-        (Point_t) {x_offset * -1, y_offset * -1},
-        TILE_DISPLAY_WIDTH, TILE_DISPLAY_HEIGHT
-    };
+    if (floor->limit_mob_vision) {
+        query = (Box_t) {
+            (Point_t) {x_offset * -1, y_offset * -1},
+            TILE_DISPLAY_WIDTH, TILE_DISPLAY_HEIGHT
+        };
+    } else {
+        query = (Box_t) {
+            (Point_t) {0,0}, floor->width, floor->height
+        };
+    }
     stream = floor_get_mob_stream(floor, query);
     while(!list_stream_is_empty(&stream)) {
         point_mob = **((TaggedData_t **) list_stream_get(&stream));

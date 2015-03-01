@@ -44,6 +44,10 @@ void floor_init(Floor_t * floor, FILE* infile)
         );
         exit(EXIT_STATUS_BAD_FILE);
     }
+    if ((fscanf(infile, "%d", &floor->limit_mob_vision)) != 1) {
+        printf("Bad file format. No LIMIT_MOB_VISION flag\n");
+        exit(EXIT_STATUS_BAD_FILE);
+    }
     size = floor->width * floor->height;
     floor->tiles = calloc(size, size * sizeof(int));
     for (i = 0, line_number = 0; i < size; line_number++) {
