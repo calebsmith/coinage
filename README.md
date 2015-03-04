@@ -10,6 +10,9 @@ For 64-bit linux, a gzipped tarball with precompiled binary and required
 assets is provided for convenience in
 [coinage/releases](https://github.com/calebsmith/coinage/releases)
 
+For linux, you'll need packages for sdl1.2, sdl mixer, sdl ttf and sdl image.
+These are described in the dependencies section below.
+
 I hope to at least add a precompiled build for Mac eventually.
 
 Notes
@@ -51,12 +54,13 @@ The following are what I believe to be the required packages on Ubuntu 12.04
 
 libsdl-image1.2-dev
 libsdl-mixer1.2-dev
-libsdl-ttf2.0-0-dev
+libsdl-ttf2.0-dev
 libsdl1.2-dev
 
 The general idea is: sdl1.2, sdl-image, sdl-mixer, and sdl-ttf.
 
-I do hope to upgrade to SDL2 at some point.
+I do hope to upgrade to SDL2 at some point. I might be able to provide a static
+build as well, so these packages aren't necessary anymore.
 
 Build
 ------
